@@ -44,9 +44,7 @@ class App extends Component {
   };
 
   render() {
-    if(this.state.user) {
-      return <Dashboard logout={this.logout} user={this.state.user} />
-    }
+    if(this.state.user) return <Dashboard logout={this.logout} user={this.state.user} />
     else return <Home />
   }
 }

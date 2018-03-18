@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 export class Home extends Component {
 
     spotifyUrl() {
-        console.log(process.env);
         let client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
         let response_type = 'code';
         let redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
