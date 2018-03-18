@@ -44,8 +44,13 @@ class App extends Component {
   };
 
   render() {
-    if(this.state.user) return <Dashboard logout={this.logout} user={this.state.user} />
-    else return <Home />
+    let div;
+    if(this.state.user) div = <Dashboard logout={this.logout} user={this.state.user} />
+    else div = <Home />
+
+    return (
+      <div className="App">{div}</div>
+    )
   }
 }
 

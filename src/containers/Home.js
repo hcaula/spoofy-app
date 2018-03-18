@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+import '../styles/Home.css';
+import logo from '../assets/imgs/spotify_green.png';
+
 export class Home extends Component {
 
     spotifyUrl() {
@@ -23,11 +26,18 @@ export class Home extends Component {
 
     render() {
         return (
-            <div>
-                <h1> Home page </h1>
-                <a href={this.spotifyUrl()}>
-                    <button>Login with Spotify</button>
-                </a>
+            <div className="Home">
+                <div className="HomeHeader">
+                    <h1 className="HomeTitle"> spoofy stats</h1>
+                    <a href={this.spotifyUrl()} className="HomeLogin">
+                        <div className="HomeSpotify">
+                            <img src={logo} alt="spoofy"/>
+                        </div>
+                        <div className="HomeLoginLink">
+                            login with Spotify
+                        </div>
+                    </a>
+                </div>
             </div>
         );
     }
