@@ -21,8 +21,9 @@ class App extends Component {
   }
 
   logout = async () => {
-    const response = await fetch('/logout', {
-        credentials: 'same-origin'
+    const api = process.env.REACT_APP_SPOOFYAPI;
+    const response = await fetch(api + './logout', {
+        credentials: 'include'
     });
 
     const body = await response.json();
@@ -32,11 +33,14 @@ class App extends Component {
 }
 
   login = async () => {
-    const response = await fetch('/login', {
-      credentials: 'same-origin'
+    const api = process.env.REACT_APP_SPOOFYAPI;
+    const response = await fetch(api + '/login', {
+      credentials: 'include'
     });
 
     const body = await response.json();
+
+    console.log(body);
 
     if (response.status !== 200) throw Error(body.message);
 
