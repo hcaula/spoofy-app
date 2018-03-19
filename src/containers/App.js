@@ -55,10 +55,10 @@ class App extends Component {
     const cookie = new Cookies();
     let access_token = (getParameterByName('token') || cookie.get('spoofy'));
 
-    console.log(access_token);
     if(access_token) cookie.set('spoofy', access_token);
 
     const api = process.env.REACT_APP_SPOOFYAPI;
+    console.log(api);
     const response = await fetch(api + '/login', {
       headers: {'access_token': access_token}
     });
