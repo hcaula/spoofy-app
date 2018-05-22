@@ -38,7 +38,7 @@ class BarChart extends Component {
 
         /* Removing the week affinities */
         graph.relations = graph.relations.sort((a, b) => b.affinity - a.affinity);
-        graph.relations = graph.relations.slice(0, graph.relations.length / 2);
+        graph.relations = graph.relations.slice(0, graph.relations.length / 3);
 
         graph.users = graph.users.map(user => {
             let ret = user;
@@ -55,7 +55,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name))
+            .force("link", forceLink().id(d => d.display_name).distance(200).strength(0.1))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -64,7 +64,7 @@ class BarChart extends Component {
             .selectAll("line")
             .data(graph.relations)
             .enter().append("line")
-            .attr("stroke-width", d => { return Math.sqrt(d.affinity) });
+            .attr("stroke-width", d => Math.sqrt(d.affinity));
 
         simulation
             .nodes(graph.users)
@@ -78,6 +78,7 @@ class BarChart extends Component {
             .selectAll("circle")
             .data(graph.users)
             .enter().append("image")
+            .attr('r', 50)
             .attr("xlink:href", d => d.images[0].url)
             .attr("height", 50)
             .attr("width", 50)
@@ -123,7 +124,7 @@ class BarChart extends Component {
 
     render() {
         return <svg ref={node => this.node = node}
-            width={500} height={500}>
+            width={1000} height={1000}>
         </svg>
     }
 }
