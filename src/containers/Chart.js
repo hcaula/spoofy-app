@@ -38,10 +38,6 @@ class BarChart extends Component {
         const width = +svg.attr("width");
         const height = +svg.attr("height");
 
-        /* Removing the week affinities */
-        graph.relations = graph.relations.sort((a, b) => b.affinity - a.affinity);
-        graph.relations = graph.relations.slice(0, graph.relations.length / 3);
-
         graph.users = graph.users.map(user => {
             let ret = user;
             ret.id = user.display_name;
@@ -57,7 +53,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(imageSize * 4).strength(0.5))
+            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 4) - d.affinity * 10).strength(0.8))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
