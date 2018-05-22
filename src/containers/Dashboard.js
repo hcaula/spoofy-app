@@ -40,7 +40,7 @@ export class Dashboard extends Component {
                 
                 <Button onClick={this.props.logout}>Logout</Button>
 
-                <Chart relations={this.relations}></Chart>
+                <Chart relations={this.relations} user={this.user}></Chart>
             </div>
         );
 

@@ -10,6 +10,7 @@ class BarChart extends Component {
         super(props)
         this.createBarChart = this.createBarChart.bind(this)
         this.relations = this.props.relations;
+        this.user = this.props.user;
     }
 
     componentDidMount() {
@@ -38,6 +39,9 @@ class BarChart extends Component {
         const width = +svg.attr("width");
         const height = +svg.attr("height");
 
+        /* Retricts relations to the logged user */
+        // graph.relations = graph.relations.filter(rel => rel.user_1 == this.user._id || rel.user_2 == this.user._id)
+
         graph.users = graph.users.map(user => {
             let ret = user;
             ret.id = user.display_name;
@@ -53,7 +57,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 4) - d.affinity * 10).strength(0.8))
+            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 5) - d.affinity * 10).strength(1))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -75,7 +79,8 @@ class BarChart extends Component {
             .attr("class", "nodes")
             .selectAll("circle")
             .data(graph.users)
-            .enter().append("image")
+            .enter()
+            .append("image")
             .attr('r', imageSize)
             .attr("xlink:href", d => d.images[0].url)
             .attr("height", imageSize)
@@ -121,8 +126,11 @@ class BarChart extends Component {
     }
 
     render() {
+        const innerHeight = window.innerHeight;
+        const innerWidth = window.innerWidth;
+
         return <svg ref={node => this.node = node}
-            width={1000} height={1000}>
+            width={innerWidth} height={1000}>
         </svg>
     }
 }
