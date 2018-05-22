@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Chart from './Chart.js'
 import Button from '../components/Button.js'
 
 export class Dashboard extends Component {
@@ -15,6 +16,8 @@ export class Dashboard extends Component {
                 <h2> ID: {this.user._id}</h2>
                 
                 <Button onClick={this.props.logout}>Logout</Button>
+
+                <Chart data={[5,10,1,3]} size={[500,500]}></Chart>
             </div>
         );
     }
