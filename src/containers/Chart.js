@@ -22,6 +22,8 @@ class BarChart extends Component {
 
     createBarChart() {
 
+        const imageSize = 75;
+
         const findUser = function (id) {
             for (let i in graph.users) {
                 const user = graph.users[i];
@@ -55,7 +57,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(200).strength(0.1))
+            .force("link", forceLink().id(d => d.display_name).distance(imageSize * 4).strength(0.5))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -78,10 +80,10 @@ class BarChart extends Component {
             .selectAll("circle")
             .data(graph.users)
             .enter().append("image")
-            .attr('r', 50)
+            .attr('r', imageSize)
             .attr("xlink:href", d => d.images[0].url)
-            .attr("height", 50)
-            .attr("width", 50)
+            .attr("height", imageSize)
+            .attr("width", imageSize)
             .attr("x", d => 0)
             .attr("y", d => 0)
             .call(drag()
@@ -100,8 +102,8 @@ class BarChart extends Component {
                 .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("x", d => d.x - 25)
-                .attr("y", d => d.y - 25);
+                .attr("x", d => d.x - imageSize/2)
+                .attr("y", d => d.y - imageSize/2);
         }
 
         function dragstarted(d) {
