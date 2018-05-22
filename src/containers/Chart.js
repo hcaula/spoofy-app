@@ -21,6 +21,14 @@ class BarChart extends Component {
     }
 
     createBarChart() {
+
+        const findUser = function (id) {
+            for (let i in graph.users) {
+                const user = graph.users[i];
+                if (user._id === id) return user.display_name;
+            }
+        }
+
         let graph = this.relations;
 
         const svg = select("svg");
@@ -28,17 +36,25 @@ class BarChart extends Component {
         const height = +svg.attr("height");
 
         /* Removing the week affinities */
-        graph.relations = graph.relations.sort((a,b) => b.affinity - a.affinity);
-        graph.relations = graph.relations.slice(0, graph.relations.length/2);
+        graph.relations = graph.relations.sort((a, b) => b.affinity - a.affinity);
+        graph.relations = graph.relations.slice(0, graph.relations.length / 2);
+
+        graph.users = graph.users.map(user => {
+            let ret = user;
+            ret.id = user.display_name;
+            return ret;
+        })
 
         graph.relations = graph.relations.map(rel => {
             let ret = rel;
-            ret.value = rel.affinity;
+            ret.source = findUser(ret.user_1);
+            ret.target = findUser(ret.user_2);
+            ret.value = Math.sqrt(ret.affinity);
             return ret;
-        });
+        })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(function (d) { return d.id; }))
+            .force("link", forceLink().id(d => d.display_name))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -47,22 +63,22 @@ class BarChart extends Component {
             .selectAll("line")
             .data(graph.relations)
             .enter().append("line")
-            .attr("stroke-width", function (d) { return Math.sqrt(d.affinity); });
+            .attr("stroke-width", d => { return Math.sqrt(d.affinity) });
 
         const node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(graph.users)
             .enter().append("circle")
-            .attr("r", 5)
-            .attr("fill", function (d) { return 'blue'; })
+            .attr("r", 10)
+            .attr("fill", d => 'blue')
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
 
         node.append("title")
-            .text(function (d) { return d.display_name; });
+            .text(d => d.display_name);
 
         simulation
             .nodes(graph.users)
@@ -73,21 +89,14 @@ class BarChart extends Component {
 
         function ticked() {
             link
-                .attr("x1", function (d) { return findUser(d.user_1).x; })
-                .attr("y1", function (d) { return findUser(d.user_1).y; })
-                .attr("x2", function (d) { return findUser(d.user_2).x; })
-                .attr("y2", function (d) { return findUser(d.user_2).y; });
+                .attr("x1", function (d) { return d.source.x; })
+                .attr("y1", function (d) { return d.source.y; })
+                .attr("x2", function (d) { return d.target.x; })
+                .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("cx", function (d) { return d.x; })
-                .attr("cy", function (d) { return d.y; });
-        }
-
-        const findUser = function(id) {
-            for (let i in graph.users) {
-                const user = graph.users[i];
-                if(user._id == id) return user;
-            }
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
         }
 
         function dragstarted(d) {
