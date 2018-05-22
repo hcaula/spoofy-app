@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import '../styles/App.css'
-import { select } from 'd3-selection'
+import { select, selectAll } from 'd3-selection'
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force'
 import { drag } from 'd3-drag'
 import { event } from 'd3'
@@ -32,6 +32,7 @@ class BarChart extends Component {
         let graph = this.relations;
 
         const svg = select("svg");
+        const defs = svg.append('svg:defs');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
 
@@ -65,13 +66,23 @@ class BarChart extends Component {
             .enter().append("line")
             .attr("stroke-width", d => { return Math.sqrt(d.affinity) });
 
+        simulation
+            .nodes(graph.users)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(graph.relations);
+
         const node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(graph.users)
-            .enter().append("circle")
-            .attr("r", 10)
-            .attr("fill", d => 'blue')
+            .enter().append("image")
+            .attr("xlink:href", d => d.images[0].url)
+            .attr("height", 50)
+            .attr("width", 50)
+            .attr("x", d => 0)
+            .attr("y", d => 0)
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -79,13 +90,6 @@ class BarChart extends Component {
 
         node.append("title")
             .text(d => d.display_name);
-
-        simulation
-            .nodes(graph.users)
-            .on("tick", ticked);
-
-        simulation.force("link")
-            .links(graph.relations);
 
         function ticked() {
             link
@@ -95,8 +99,8 @@ class BarChart extends Component {
                 .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
+                .attr("x", d => d.x)
+                .attr("y", d => d.y);
         }
 
         function dragstarted(d) {
