@@ -9,10 +9,13 @@ export class Dashboard extends Component {
         this.access_token = this.props.token;
     }
 
+    state = { ready: false };
+
     componentDidMount() {
         this.requestRelations()
             .then(res => {
-                console.log(res);
+                this.relations = res;
+                this.setState({ready: true });
             })
             .catch(err => console.log(err));
     }
@@ -29,7 +32,7 @@ export class Dashboard extends Component {
     };
 
     render() {
-        return (
+        const dashboard = (
             <div>
                 <h1> Dashboard </h1>
                 <h2> Name: {this.user.display_name}</h2>
@@ -37,8 +40,14 @@ export class Dashboard extends Component {
                 
                 <Button onClick={this.props.logout}>Logout</Button>
 
-                <Chart data={[5,10,1,3]} size={[500,500]}></Chart>
+                <Chart relations={this.relations}></Chart>
             </div>
         );
+
+        let div;
+        if (this.state.ready) div = dashboard;
+
+        return this.state.ready ? <div className="Dashboard">{div}</div> : '';
+
     }
 }

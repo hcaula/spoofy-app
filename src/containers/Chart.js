@@ -7,10 +7,13 @@ class BarChart extends Component {
     constructor(props) {
         super(props)
         this.createBarChart = this.createBarChart.bind(this)
+        this.relations = this.props.relations;
     }
+
     componentDidMount() {
         this.createBarChart()
     }
+
     componentDidUpdate() {
         this.createBarChart()
     }
@@ -24,6 +27,8 @@ class BarChart extends Component {
             .force("link", forceLink().id(function (d) { return d.id; }))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
+
+        console.log(this.relations);
 
         // d3.json("miserables.json", function (error, graph) {
         //     if (error) throw error;
