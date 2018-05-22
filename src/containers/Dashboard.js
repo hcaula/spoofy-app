@@ -6,7 +6,27 @@ export class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.user = this.props.user;
+        this.access_token = this.props.token;
     }
+
+    componentDidMount() {
+        this.requestRelations()
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));
+    }
+
+    requestRelations = async () => {
+        const api = process.env.REACT_APP_SPOOFYAPI;
+        const response = await fetch(api + '/api/v1/relations', {
+            headers: { 'access_token': this.access_token }
+        });
+
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        return body;
+    };
 
     render() {
         return (
