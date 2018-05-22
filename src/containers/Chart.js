@@ -68,10 +68,10 @@ class BarChart extends Component {
 
         simulation
             .nodes(graph.users)
-            .on("tick", ticked);
+            .on("tick", ticked)
 
         simulation.force("link")
-            .links(graph.relations);
+            .links(graph.relations)
 
         const node = svg.append("g")
             .attr("class", "nodes")
@@ -99,8 +99,8 @@ class BarChart extends Component {
                 .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("x", d => d.x)
-                .attr("y", d => d.y);
+                .attr("x", d => d.x - 25)
+                .attr("y", d => d.y - 25);
         }
 
         function dragstarted(d) {
