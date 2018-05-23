@@ -35,7 +35,7 @@ class BarChart extends Component {
         let graph = this.relations;
 
         const svg = select("svg");
-        const defs = svg.append('svg:defs');
+        const defs = svg.append('defs');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
 
@@ -75,18 +75,27 @@ class BarChart extends Component {
         simulation.force("link")
             .links(graph.relations)
 
+        defs.selectAll('patterns')
+            .data(graph.users)
+            .enter()
+            .append('pattern')
+            .attr('id', d => d._id)
+            .attr("height", 10)
+            .attr("width", 10)
+            .append('image')
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
+            .attr('preserveAspectRatio', "xMidYMid meet")
+            .attr('xlink:href', d => d.images[0].url)
+
         const node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(graph.users)
             .enter()
-            .append("image")
+            .append('circle')
             .attr('r', imageSize)
-            .attr("xlink:href", d => d.images[0].url)
-            .attr("height", imageSize)
-            .attr("width", imageSize)
-            .attr("x", d => 0)
-            .attr("y", d => 0)
+            .attr('fill', d => `url(#${d._id})`)
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -103,8 +112,8 @@ class BarChart extends Component {
                 .attr("y2", function (d) { return d.target.y; });
 
             node
-                .attr("x", d => d.x - imageSize/2)
-                .attr("y", d => d.y - imageSize/2);
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
         }
 
         function dragstarted(d) {
@@ -129,9 +138,12 @@ class BarChart extends Component {
         const innerHeight = window.innerHeight;
         const innerWidth = window.innerWidth;
 
-        return <svg ref={node => this.node = node}
-            width={innerWidth} height={1000}>
-        </svg>
+        return (
+            <svg ref={node => this.node = node} width={innerWidth} height={1000}>
+            </svg>
+
+        )
+
     }
 }
 export default BarChart
