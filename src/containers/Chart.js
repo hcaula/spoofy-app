@@ -23,7 +23,7 @@ class BarChart extends Component {
 
     createBarChart() {
 
-        const imageSize = 75;
+        const imageSize = 50;
 
         const findUser = function (id) {
             for (let i in graph.users) {
@@ -57,7 +57,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 5) - d.affinity * 10).strength(1))
+            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 10) - d.affinity * 10).strength(1))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -80,11 +80,10 @@ class BarChart extends Component {
             .enter()
             .append('pattern')
             .attr('id', d => d._id)
-            .attr("height", 10)
-            .attr("width", 10)
+            .attr("height", 1)
+            .attr("width", 1)
             .append('image')
-            .attr('x', d => d.x)
-            .attr('y', d => d.y)
+            .attr('transform', `translate(-${imageSize},-${imageSize})`)
             .attr('preserveAspectRatio', "xMidYMid meet")
             .attr('xlink:href', d => d.images[0].url)
 
