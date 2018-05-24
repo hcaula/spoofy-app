@@ -14,6 +14,7 @@ export class Dashboard extends Component {
     componentDidMount() {
         this.requestRelations()
             .then(res => {
+                console.log('Request finished successfully.');
                 this.relations = res;
                 this.setState({ready: true });
             })
@@ -22,6 +23,8 @@ export class Dashboard extends Component {
 
     requestRelations = async () => {
         const api = process.env.REACT_APP_SPOOFYAPI;
+
+        console.log(`Requesting from ${api}.`);
         const response = await fetch(api + '/api/v1/relations', {
             headers: { 'access_token': this.access_token }
         });
@@ -45,7 +48,10 @@ export class Dashboard extends Component {
         );
 
         let div;
-        if (this.state.ready) div = dashboard;
+        if (this.state.ready) {
+            console.log('State changing, rendering relations.');
+            div = dashboard;
+        }
 
         return this.state.ready ? <div className="Dashboard">{div}</div> : '';
 
