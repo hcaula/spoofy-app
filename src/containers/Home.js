@@ -9,7 +9,7 @@ export class Home extends Component {
         let client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
         let response_type = 'code';
         let redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
-        let scope = 'user-read-recently-played user-read-email user-read-private'
+        let scope = 'user-read-recently-played user-read-email user-read-private playlist-read-private playlist-read-collaborative'
         
         let host = 'accounts.spotify.com';
         let path = '/authorize/?';

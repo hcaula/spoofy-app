@@ -45,13 +45,14 @@ class BarChart extends Component {
         graph.relations = graph.users.reduce((array, u) => {
             let relations = graph.relations.filter(rel => rel.user_1 == u._id || rel.user_2 == u._id);
             relations = relations.sort((a, b) => b.affinity - a.affinity);
-            relations = relations.slice(0, 1);
-            relations.forEach(r => array.push(r));
+            const cutRelations = relations.filter(rel => rel.affinity > 10);
+            if(cutRelations.length == 0) cutRelations.push(relations[0]);
+            cutRelations.forEach(r => array.push(r));
             return array;
         }, []);
 
         /* Restricts relactions to a certain affinity threshold */
-        // graph.relations = graph.relations.filter(rel => rel.affinity > 13);
+        // graph.relations = graph.relations.filter(rel => rel.affinity > 10);
 
         graph.users = graph.users.map(user => {
             let ret = user;
@@ -68,7 +69,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 10) - d.affinity * 10).strength(1))
+            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 10) - d.affinity * 5).strength(1))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
