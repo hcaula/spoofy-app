@@ -38,20 +38,12 @@ export class Dashboard extends Component {
     render() {
         if (this.state.error) return <Error error={this.state.error} />;
         else if (!this.state.ready) return <Waiting message="Hi! We're requesting your top tracks" />;
-        else {
-            const dashboard = (
-                <div>
-                    <h1> Dashboard </h1>
-                    <h2> Name: {this.user.display_name}</h2>
-                    <h2> ID: {this.user._id}</h2>
-                </div>
-            );
-
-            let div;
-            if (this.state.ready) div = dashboard;
-
-            return this.state.ready ? <div className="Dashboard">{div}</div> : '';
-
-        }
+        else return (
+            <div>
+                <h1> Dashboard </h1>
+                <h2> Name: {this.user.display_name}</h2>
+                <h2> ID: {this.user._id}</h2>
+            </div>
+        );
     }
 }

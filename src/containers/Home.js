@@ -33,7 +33,6 @@ export class Home extends Component {
         if (token) {
             this.login(token)
                 .then(res => {
-                    console.log(res);
                     if (res.status != 200) this.setState({ error: res });
                     else {
                         this.user = res.user;
