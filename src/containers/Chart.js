@@ -42,14 +42,24 @@ class BarChart extends Component {
         /* Restricts relations to the logged user */
         // graph.relations = graph.relations.filter(rel => rel.user_1 == this.user._id || rel.user_2 == this.user._id)
 
+        // graph.relations = graph.users.reduce((array, u) => {
+        //     let relations = graph.relations.filter(rel => rel.user_1 == u._id || rel.user_2 == u._id);
+        //     relations = relations.sort((a, b) => b.affinity - a.affinity);
+        //     const cutRelations = relations.filter(rel => rel.affinity > 10);
+        //     if(cutRelations.length == 0) cutRelations.push(relations[0]);
+        //     cutRelations.forEach(r => array.push(r));
+        //     return array;
+        // }, []);
+
         graph.relations = graph.users.reduce((array, u) => {
             let relations = graph.relations.filter(rel => rel.user_1 == u._id || rel.user_2 == u._id);
             relations = relations.sort((a, b) => b.affinity - a.affinity);
             const cutRelations = relations.filter(rel => rel.affinity > 10);
-            if(cutRelations.length == 0) cutRelations.push(relations[0]);
+            // if(cutRelations.length == 0) cutRelations.push(relations[0]);
             cutRelations.forEach(r => array.push(r));
             return array;
         }, []);
+        
 
         /* Restricts relactions to a certain affinity threshold */
         // graph.relations = graph.relations.filter(rel => rel.affinity > 10);

@@ -6,12 +6,12 @@ import logo from '../assets/imgs/spotify_green.png';
 export class Home extends Component {
 
     spotifyUrl() {
-        let client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
-        let response_type = 'code';
-        let redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
-        let scope = 'user-read-recently-played user-read-email user-read-private playlist-read-private playlist-read-collaborative user-top-read'
+        const client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
+        const response_type = 'code';
+        const redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
+        const scope = 'user-read-email user-read-private user-top-read';
         
-        let host = 'accounts.spotify.com';
+        const host = 'accounts.spotify.com';
         let path = '/authorize/?';
         path += `client_id=${client_id}&`;
         path += `response_type=${response_type}&`;
@@ -19,7 +19,7 @@ export class Home extends Component {
         path += `scope=${scope}&`;
         path += `show_dialog=${true}`;
         
-        let uri = `https://${host}${path}`;
+        const uri = `https://${host}${path}`;
         
         return uri;
     }
