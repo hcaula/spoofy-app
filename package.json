@@ -1,11 +1,10 @@
 {
   "name": "spoofy-app",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "d3": "^5.4.0",
     "react": "^16.2.0",
-    "react-cookie": "^2.1.4",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1"
   },

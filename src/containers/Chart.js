@@ -39,8 +39,30 @@ class BarChart extends Component {
         const width = +svg.attr("width");
         const height = +svg.attr("height");
 
-        /* Retricts relations to the logged user */
+        /* Restricts relations to the logged user */
         // graph.relations = graph.relations.filter(rel => rel.user_1 == this.user._id || rel.user_2 == this.user._id)
+
+        // graph.relations = graph.users.reduce((array, u) => {
+        //     let relations = graph.relations.filter(rel => rel.user_1 == u._id || rel.user_2 == u._id);
+        //     relations = relations.sort((a, b) => b.affinity - a.affinity);
+        //     const cutRelations = relations.filter(rel => rel.affinity > 10);
+        //     if(cutRelations.length == 0) cutRelations.push(relations[0]);
+        //     cutRelations.forEach(r => array.push(r));
+        //     return array;
+        // }, []);
+
+        graph.relations = graph.users.reduce((array, u) => {
+            let relations = graph.relations.filter(rel => rel.user_1 == u._id || rel.user_2 == u._id);
+            relations = relations.sort((a, b) => b.affinity - a.affinity);
+            const cutRelations = relations.filter(rel => rel.affinity > 10);
+            // if(cutRelations.length == 0) cutRelations.push(relations[0]);
+            cutRelations.forEach(r => array.push(r));
+            return array;
+        }, []);
+        
+
+        /* Restricts relactions to a certain affinity threshold */
+        // graph.relations = graph.relations.filter(rel => rel.affinity > 10);
 
         graph.users = graph.users.map(user => {
             let ret = user;
@@ -57,7 +79,7 @@ class BarChart extends Component {
         })
 
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 10) - d.affinity * 10).strength(1))
+            .force("link", forceLink().id(d => d.display_name).distance(d => (imageSize * 10) - d.affinity * 5).strength(1))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
@@ -138,7 +160,7 @@ class BarChart extends Component {
         const innerWidth = window.innerWidth;
 
         return (
-            <svg ref={node => this.node = node} width={innerWidth} height={1000}>
+            <svg ref={node => this.node = node} width={innerWidth} height={2000}>
             </svg>
 
         )
