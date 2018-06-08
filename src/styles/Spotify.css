@@ -1,0 +1,27 @@
+.SpotifyLogin {
+    height: 47px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.SpotifySpotify {
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    margin-right: 20px;
+}
+
+.SpotifySpotify>img {
+    height: 41px;
+}
+
+.SpotifyLoginLink {
+    color: white;
+}
+
+.SpotifyLogin:link, .HomeLogin:visited {
+    text-decoration: none !important;
+    color: white;
+}

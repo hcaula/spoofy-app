@@ -1,45 +1,54 @@
 import React, { Component } from 'react';
 
+import Spotify from '../components/Spotify';
+
 import '../styles/Home.css';
-import logo from '../assets/imgs/spotify_green.png';
+
+const getQueryParam = (name, url) => {
+    if (!url) url = window.location.href;
+    const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
 export class Home extends Component {
 
-    spotifyUrl() {
-        const client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
-        const response_type = 'code';
-        const redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
-        const scope = 'user-read-email user-read-private user-top-read';
-        
-        const host = 'accounts.spotify.com';
-        let path = '/authorize/?';
-        path += `client_id=${client_id}&`;
-        path += `response_type=${response_type}&`;
-        path += `redirect_uri=${redirect_uri}&`;
-        path += `scope=${scope}&`;
-        path += `show_dialog=${true}`;
-        
-        const uri = `https://${host}${path}`;
-        
-        return uri;
+    constructor(props) {
+        super(props);
+        this.user = {};
+        this.token = "";
     }
+
+    componentDidMount() {
+        this.login();
+    }
+
+    login = async () => {
+        const access_token = getQueryParam('token');
+
+        const api = process.env.REACT_APP_SPOOFYAPI;
+        const response = await fetch(api + '/login', {
+            headers: { 'access_token': access_token }
+        });
+
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+        else {
+            body.access_token = access_token;
+            return body;
+        }
+    };
 
     render() {
         return (
             <div className="Home">
                 <div className="HomeHeader">
                     <h1 className="HomeTitle"> spoofy stats</h1>
-                    <a href={this.spotifyUrl()} className="HomeLogin">
-                        <div className="HomeSpotify">
-                            <img src={logo} alt="spoofy"/>
-                        </div>
-                        <div className="HomeLoginLink">
-                            login with Spotify
-                        </div>
-                    </a>
+                    <Spotify />
                 </div>
             </div>
         );
     }
 }
-  
