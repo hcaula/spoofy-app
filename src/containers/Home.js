@@ -30,8 +30,9 @@ export class Home extends Component {
     componentDidMount() {
         const token = getQueryParam('token');
         if (token) {
-            this.login()
+            this.login(token)
                 .then(res => {
+                    console.log(res.user);
                     this.user = res.user;
                     this.token = res.access_token;
                     this.setState({ ready: true });
@@ -58,7 +59,7 @@ export class Home extends Component {
 
     render() {
         if (this.state.error) return <Error error={this.state.error}/>;
-        else if (this.user) return <Dashboard user={this.state.user} token={this.state.access_token} />
+        else if (this.user) return <Dashboard user={this.user} token={this.access_token} />
         else if (!this.state.ready) return <Waiting />;
         else return (
             <div className="Home">
