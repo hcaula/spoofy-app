@@ -23,6 +23,7 @@ export class Home extends Component {
         super(props);
         this.user;
         this.token;
+        this.isNew = false;
     }
 
     state = { ready: false, error: false };
@@ -32,13 +33,20 @@ export class Home extends Component {
         if (token) {
             this.login(token)
                 .then(res => {
-                    console.log(res.user);
-                    this.user = res.user;
-                    this.token = res.access_token;
-                    this.setState({ ready: true });
+                    console.log(res);
+                    if (res.status != 200) this.setState({ error: res });
+                    else {
+                        this.user = res.user;
+                        this.token = res.access_token;
+
+                        const isNew = getQueryParam('new');
+                        if (isNew == 'true') this.isNew = true;
+
+                        this.setState({ ready: true });
+                    }
                 })
                 .catch(error => {
-                    this.setState({ error: true });
+                    this.setState({ error: error });
                 });
         } else this.setState({ ready: true });
     }
@@ -50,17 +58,15 @@ export class Home extends Component {
         });
 
         const body = await response.json();
-        if (response.status !== 200) this.setState({ error: body });
-        else {
-            body.access_token = access_token;
-            return body;
-        }
+        body.access_token = access_token;
+        body.status = response.status;
+        return body;
     };
 
     render() {
-        if (this.state.error) return <Error error={this.state.error}/>;
-        else if (this.user) return <Dashboard user={this.user} token={this.access_token} />
-        else if (!this.state.ready) return <Waiting />;
+        if (this.state.error) return <Error error={this.state.error} />;
+        else if (this.user) return <Dashboard user={this.user} token={this.token} isNew={this.isNew} />
+        else if (!this.state.ready) return <Waiting message="Hold on..." />;
         else return (
             <div className="Home">
                 <div className="HomeHeader">

@@ -4,7 +4,10 @@ export class Error extends Component {
 
     render() {
         return (
-            <p> {this.props.error.message} </p>
+            <div className="Error">
+                <p> An error has occurred: </p>
+                <p> {this.props.error.error} </p>
+            </div>
         );
     }
 }

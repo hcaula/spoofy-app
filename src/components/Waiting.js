@@ -5,7 +5,7 @@ export class Waiting extends Component {
     render() {
         return (
             <div className="Wating">
-                <p> Hold on...</p>
+                <p> {this.props.message} </p>
             </div>
         );
     }

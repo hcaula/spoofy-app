@@ -1,53 +1,57 @@
 import React, { Component } from 'react';
-import Chart from './Chart.js'
-import Button from '../components/Button.js'
+
+import Error from '../components/Error';
+import Waiting from '../components/Waiting';
 
 export class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.user = this.props.user;
-        this.access_token = this.props.token;
+        this.token = this.props.token;
+        this.isNew = this.props.isNew;
     }
 
-    state = { ready: false };
+    state = { ready: false, error: false };
 
     componentDidMount() {
-        this.requestRelations()
-            .then(res => {
-                this.relations = res;
-                this.setState({ready: true });
-            })
-            .catch(err => console.log(err));
+        if (this.isNew) {
+            this.requestTop(this.token)
+                .then(res => {
+                    if (res.status != 200) this.setState({ error: res });
+                    else this.setState({ ready: true });
+                });
+        } else this.setState({ ready: true });
     }
 
-    requestRelations = async () => {
+    requestTop = async (access_token) => {
         const api = process.env.REACT_APP_SPOOFYAPI;
-        const response = await fetch(api + '/api/v1/relations', {
-            headers: { 'access_token': this.access_token }
+        const response = await fetch(api + '/api/v2/me/top', {
+            method: 'POST',
+            headers: { 'access_token': access_token }
         });
 
         const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
+        body.status = response.status;
         return body;
     };
 
     render() {
-        const dashboard = (
-            <div>
-                <h1> Dashboard </h1>
-                <h2> Name: {this.user.display_name}</h2>
-                <h2> ID: {this.user._id}</h2>
-                
-                <Button onClick={this.props.logout}>Logout</Button>
+        if (this.state.error) return <Error error={this.state.error} />;
+        else if (!this.state.ready) return <Waiting message="Hi! We're requesting your top tracks" />;
+        else {
+            const dashboard = (
+                <div>
+                    <h1> Dashboard </h1>
+                    <h2> Name: {this.user.display_name}</h2>
+                    <h2> ID: {this.user._id}</h2>
+                </div>
+            );
 
-                <Chart relations={this.relations} user={this.user}></Chart>
-            </div>
-        );
+            let div;
+            if (this.state.ready) div = dashboard;
 
-        let div;
-        if (this.state.ready) div = dashboard;
+            return this.state.ready ? <div className="Dashboard">{div}</div> : '';
 
-        return this.state.ready ? <div className="Dashboard">{div}</div> : '';
-
+        }
     }
 }
