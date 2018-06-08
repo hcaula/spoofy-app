@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
-import '../styles/Dashboard.css';
+import { List } from './List';
 
 import Error from '../components/Error';
 import Waiting from '../components/Waiting';
+
+import '../styles/Dashboard.css';
 
 export class Dashboard extends Component {
     constructor(props) {
@@ -21,18 +23,20 @@ export class Dashboard extends Component {
             this.requestTop(this.token)
                 .then(res => {
                     if (res.status != 200) this.setState({ error: res });
-                    else {
-                        this.requestUsers(this.token)
-                            .then(res => {
-                                if (res.status != 200) this.setState({ error: res });
-                                else {
-                                    this.users = res.users;
-                                    this.setState({ ready: true });
-                                }
-                            })
-                    }
+                    else this.afterTopReq();
                 });
-        } else this.setState({ ready: true });
+        } else this.afterTopReq();
+    }
+
+    afterTopReq = function () {
+        this.requestUsers(this.token)
+            .then(res => {
+                if (res.status != 200) this.setState({ error: res });
+                else {
+                    this.users = res.users;
+                    this.setState({ ready: true });
+                }
+            })
     }
 
     requestTop = async (access_token) => {
@@ -69,8 +73,7 @@ export class Dashboard extends Component {
                     <p> (soon, we'll have a graph visualization of your friends. for now, we just want to do some tests) </p>
                 </div>
 
-                <div className="DashboardList">
-                </div>
+                <List users={this.users} />
             </div>
         );
     }
