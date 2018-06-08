@@ -6,7 +6,7 @@ export class Error extends Component {
         return (
             <div className="Error">
                 <p> An error has occurred: </p>
-                <p> {this.props.error.error} </p>
+                <p> {JSON.stringify(this.props.error)} </p>
             </div>
         );
     }
