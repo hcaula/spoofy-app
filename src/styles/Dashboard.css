@@ -1,0 +1,29 @@
+.Dashboard {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    background-color: #191414;
+    color: white;
+    height: 100%;
+}
+
+.DashboardTitle>h1 {
+    font-size: 70px;
+    margin: 0px;
+
+    margin-bottom: 30px;
+}
+
