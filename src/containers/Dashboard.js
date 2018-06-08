@@ -43,6 +43,7 @@ export class Dashboard extends Component {
                 <h1> Dashboard </h1>
                 <h2> Name: {this.user.display_name}</h2>
                 <h2> ID: {this.user._id}</h2>
+                <h2> Token: {this.token} </h2>
             </div>
         );
     }
