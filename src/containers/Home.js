@@ -21,8 +21,6 @@ export class Home extends Component {
 
     constructor(props) {
         super(props);
-        this.user;
-        this.token;
         this.isNew = false;
     }
 
@@ -33,13 +31,13 @@ export class Home extends Component {
         if (token) {
             this.login(token)
                 .then(res => {
-                    if (res.status != 200) this.setState({ error: res });
+                    if (res.status !== 200) this.setState({ error: res });
                     else {
                         this.user = res.user;
                         this.token = res.access_token;
 
                         const isNew = getQueryParam('new');
-                        if (isNew == 'true') this.isNew = true;
+                        if (isNew === 'true') this.isNew = true;
 
                         this.setState({ ready: true });
                     }

@@ -22,7 +22,7 @@ export class Dashboard extends Component {
         if (this.isNew) {
             this.requestTop(this.token)
                 .then(res => {
-                    if (res.status != 200) this.setState({ error: res });
+                    if (res.status !== 200) this.setState({ error: res });
                     else this.afterTopReq();
                 });
         } else this.afterTopReq();
@@ -31,7 +31,7 @@ export class Dashboard extends Component {
     afterTopReq = function () {
         this.requestUsers(this.token)
             .then(res => {
-                if (res.status != 200) this.setState({ error: res });
+                if (res.status !== 200) this.setState({ error: res });
                 else {
                     this.users = res.users;
                     this.setState({ ready: true });
