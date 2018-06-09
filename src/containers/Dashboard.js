@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { List } from './List';
+import Graph from './Graph';
 
 import Error from '../components/Error';
 import Waiting from '../components/Waiting';
@@ -70,10 +70,9 @@ export class Dashboard extends Component {
                 <div className="DashboardTitle">
                     <h1> thank you for joining, {this.user.display_name} </h1>
                     <h2> please, select the people you believe have similar taste in music with you </h2>
-                    <p> (soon, we'll have a graph visualization of your friends. for now, we just want to do some tests) </p>
                 </div>
 
-                {/* <List users={this.users} /> */}
+                <Graph users={this.users} user={this.user} />
             </div>
         );
     }
