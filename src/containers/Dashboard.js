@@ -64,7 +64,7 @@ export class Dashboard extends Component {
 
     render() {
         if (this.state.error) return <Error error={this.state.error} />;
-        else if (!this.state.ready) return <Waiting message="Hi! We're requesting your top tracks" />;
+        else if (!this.state.ready) return <Waiting message="Hold on..." />;
         else return (
             <div className="Dashboard">
                 <div className="DashboardTitle">
@@ -73,7 +73,7 @@ export class Dashboard extends Component {
                     <p> (soon, we'll have a graph visualization of your friends. for now, we just want to do some tests) </p>
                 </div>
 
-                <List users={this.users} />
+                {/* <List users={this.users} /> */}
             </div>
         );
     }
