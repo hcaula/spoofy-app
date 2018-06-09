@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import '../styles/Graph.css';
 
-const searchByField = function(value, param, array) {
+const searchByField = function (value, param, array) {
     let index = -1;
     array.forEach((el, i) => {
         if (el[param] === value) {
@@ -23,14 +23,16 @@ class Graph extends Component {
     }
 
     init() {
-        this.getGenreNodes();
+        this.setGenreNodes();
+        this.setUserNodes();
+        this.setLinks();
         this.createGraph();
     }
 
-    componentDidMount() {this.init()}
-    componentDidUpdate() {this.init()}
+    componentDidMount() { this.init() }
+    componentDidUpdate() { this.init() }
 
-    getGenreNodes() {
+    setGenreNodes() {
         this.genreNodes = [];
         this.users.forEach(u => {
             u.genres.forEach(g => {
@@ -42,6 +44,27 @@ class Graph extends Component {
             });
         });
         this.genreNodes = this.genreNodes.sort((a, b) => b.weight - a.weight);
+    }
+
+    setUserNodes() {
+        this.userNodes = this.users.map(u => {
+            return {
+                id: u._id,
+                image: u.images[0].url
+            }
+        });
+    }
+
+    setLinks() {
+        this.links = [];
+        this.users.forEach(u => {
+            u.genres.forEach(g => {
+                this.links.push({
+                    source: u._id,
+                    target: g.id
+                });
+            });
+        });
     }
 
     createGraph() {
