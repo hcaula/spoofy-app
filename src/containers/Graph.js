@@ -35,12 +35,15 @@ class Graph extends Component {
     setGenreNodes() {
         this.genreNodes = [];
         this.users.forEach(u => {
-            u.genres.forEach(g => {
-                g.id = g._id;
-                delete g._id;
+            u.genres.forEach((g, i) => {
                 const index = searchByField(g.name, 'name', this.genreNodes);
                 if (index > -1) this.genreNodes[index].weight += g.weight;
-                else this.genreNodes.push(g);
+                else this.genreNodes.push({
+                    id: g._id,
+                    name: g.name,
+                    type: 'genre',
+                    weight: g.weight
+                });
             });
         });
         this.genreNodes = this.genreNodes.sort((a, b) => b.weight - a.weight);
@@ -50,7 +53,8 @@ class Graph extends Component {
         this.userNodes = this.users.map(u => {
             return {
                 id: u._id,
-                image: u.images[0].url
+                image: u.images[0].url,
+                type: 'user'
             }
         });
     }
@@ -59,9 +63,15 @@ class Graph extends Component {
         this.links = [];
         this.users.forEach(u => {
             u.genres.forEach(g => {
+                const index = searchByField(g.name, 'name', this.genreNodes);
+                let id;
+                if (index > -1) id = this.genreNodes[index].id;
+                else id = g._id;
                 this.links.push({
                     source: u._id,
-                    target: g.id
+                    target: id,
+                    weight: g.weight,
+                    name: g.name
                 });
             });
         });
