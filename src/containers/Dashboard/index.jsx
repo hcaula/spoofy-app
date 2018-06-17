@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { Sidebar, Button, Image, Menu, Icon } from 'semantic-ui-react';
 import Graph from './components/Graph';
 import { API } from '../../utils';
@@ -9,42 +9,39 @@ import sample from '../../assets/imgs/sample.png';
 class Dashboard extends Component {
 
     
-    constructor(props) {
-        super(props);
-        this.user = API.getUser();
-        this.token = API.getToken();
-        this.state = {
-            visible: false,
-            ready: false,
-            error: false,
-            users: []
-        };
-        if (!this.token) {
-            props.history.push('/login')
-        }
+    state = {
+        visible: false,
+        ready: false,
+        users: []
     }
     
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
-    async componentDidMount() {
-        if (this.isNew) {
-            await API.requestTopInfo();
-        }
+    async loadData() {
         const users = await API.getAllUsers();
         this.setState({ ready: true, users });
     }
 
     render() {
-        const { visible } = this.state;
         const width = window.innerWidth;
         const height = window.innerHeight;
+
+        const { visible } = this.state;
+
+        const user = API.getUser();
+
+        if (!user) {
+            return <Redirect to="/login"/>
+        }
+
+        this.loadData();
 
         return (
             <Sidebar.Pushable>
 
                 <div className="Dashboard">
                     <div className="DashboardTitle">
-                        <p>{`thank you for joining, ${this.user.display_name}`}</p>
+                        <p>{`thank you for joining, ${user.display_name}`}</p>
                         <p>{`please, select the people you believe have similar taste in music with you`}</p>
                     </div>
 
@@ -59,10 +56,10 @@ class Dashboard extends Component {
                     
                     {!this.state.ready ? null:
                         <Graph
-                        users={this.state.users}
-                        user={this.user}
-                        width={width}
-                        height={height}
+                            users={this.state.users}
+                            user={user}
+                            width={width}
+                            height={height}
                         />
                     }
                 </div>

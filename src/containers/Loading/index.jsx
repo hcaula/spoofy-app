@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import { API } from '../../utils';
+import './index.css';
 
 export default class Loading extends Component {
     
@@ -23,8 +24,12 @@ export default class Loading extends Component {
         try {
             await API.login(token);
             parsed = queryString.parse(window.location.search);
+            const isNew = parsed.new === 'true';
+            if (isNew) {
+                await API.requestTopInfo();
+            }
             this.setState({
-                path: parsed.new === 'true' ? '/profile':'/'
+                path: isNew ? '/profile':'/'
             });
         } catch (error) {
             console.log(error);
@@ -34,7 +39,7 @@ export default class Loading extends Component {
     render() {
         if (!this.state.path) {
             return (
-                <div>
+                <div className="loading">
                     Loading data
                 </div>
             );

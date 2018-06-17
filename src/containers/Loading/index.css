@@ -1,0 +1,7 @@
+.loading {
+    background-color: rgb(25,20,20, 1);
+    width: 100vw;
+    height: 100vh;
+    padding-top: 15vh;
+    color: white;
+}
