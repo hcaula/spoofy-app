@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-
-import { select, selectAll } from 'd3-selection'
-import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force'
-import { drag } from 'd3-drag'
-import { event } from 'd3'
-
-import '../styles/App.css';
-import '../styles/Graph.css';
+import { select } from 'd3-selection';
+import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
+import { drag } from 'd3-drag';
+import { event } from 'd3';
 
 const searchByField = function (value, param, array) {
     let index = -1;
@@ -20,9 +16,9 @@ const searchByField = function (value, param, array) {
 }
 
 class Graph extends Component {
+
     constructor(props) {
-        super(props)
-        this.createGraph = this.createGraph.bind(this)
+        super(props);
         this.user = this.props.user;
         this.users = this.props.users;
     }
@@ -36,8 +32,13 @@ class Graph extends Component {
         this.createGraph();
     }
 
-    componentDidMount() { this.init() }
-    componentDidUpdate() { this.init() }
+    componentDidMount() { 
+        this.init()
+    }
+
+    componentDidUpdate() {
+        this.init()
+    }
 
     setGenreNodes() {
         this.genreNodes = [];
@@ -168,10 +169,8 @@ class Graph extends Component {
     }
 
     render() {
-        const width = 1000;
-        const height = 1000;
         return (
-            <svg ref={node => this.node = node} width={width} height={height} className="Graph"></svg>
+            <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}></svg>
         )
     }
 }
