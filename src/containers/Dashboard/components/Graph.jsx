@@ -36,10 +36,6 @@ class Graph extends Component {
         this.init()
     }
 
-    componentDidUpdate() {
-        this.init()
-    }
-
     setGenreNodes() {
         this.genreNodes = [];
         this.users.forEach(u => {
@@ -71,7 +67,7 @@ class Graph extends Component {
         this.links = [];
         this.users.forEach(u => {
             u.genres.forEach(g => {
-                if (g.weight > 0) {
+                if (g.weight > 5) {
                     const index = searchByField(g.name, 'name', this.genreNodes);
                     let id;
                     if (index > -1) id = this.genreNodes[index].id;
@@ -117,22 +113,22 @@ class Graph extends Component {
             .data(this.nodes)
             .enter()
             .append('circle')
-            .attr('r', g => g.weight ? g.weight * 2 : 5 * 2)
+            .attr('r', g => g.weight ? getRadius(g.weight) : 5 * 2)
             .attr('fill', g => g.type === 'genre' ? 'blue' : 'red')
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
 
-        // const text = svg.append("g")
-        // .attr("class", "texts")
-        // .selectAll("circle")
-        // .data(this.nodes)
-        // .enter()
-        // .append("text")
-        // .attr("x", d => d.x)
-        // .attr("y", d => d.y)
-        // .text(d => d.name)
+        const text = svg.append("g")
+        .attr("class", "texts")
+        .selectAll("circle")
+        .data(this.nodes)
+        .enter()
+        .append("text")
+        .text(d => d.name)
+        .attr("text-anchor", "middle")
+        .on("click", (d,y) => {console.log(d);console.log(y);})
 
         node.append("title")
             .text(d => d.id);
@@ -147,6 +143,20 @@ class Graph extends Component {
             node
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y);
+
+            text
+                .attr("x", d => d.x)
+                .attr("y", d => (d.weight ? d.y + getRadius(d.weight)/8 : d.y));
+        }
+        
+        function getRadius(weight) {
+            const max = 60;
+            const min = 10;
+            const mult = weight * 2;
+
+            if (mult < min) return min;
+            if (mult > max) return max;
+            else return mult;
         }
 
         function dragstarted(d) {
