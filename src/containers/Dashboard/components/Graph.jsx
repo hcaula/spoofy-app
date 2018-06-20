@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { select } from 'd3-selection';
+import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
 import { drag } from 'd3-drag';
+import { zoom } from 'd3-zoom';
 import { event } from 'd3';
 
 const searchByField = function (value, param, array) {
@@ -21,6 +22,7 @@ class Graph extends Component {
         super(props);
         this.user = this.props.user;
         this.users = this.props.users;
+        this.default_weight = 5;
     }
 
     init() {
@@ -32,7 +34,7 @@ class Graph extends Component {
         this.createGraph();
     }
 
-    componentDidMount() { 
+    componentDidMount() {
         this.init()
     }
 
@@ -67,7 +69,7 @@ class Graph extends Component {
         this.links = [];
         this.users.forEach(u => {
             u.genres.forEach(g => {
-                if (g.weight > 5) {
+                if (g.weight > this.default_weight) {
                     const index = searchByField(g.name, 'name', this.genreNodes);
                     let id;
                     if (index > -1) id = this.genreNodes[index].id;
@@ -85,20 +87,23 @@ class Graph extends Component {
 
     createGraph() {
         const svg = select('svg');
+        const graph = svg.append('g');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
+        const user_radius = 10;
 
         const simulation = forceSimulation()
             .force("link", forceLink().id(d => d.id).distance(200))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2));
 
-        const link = svg.append("g")
+        const link = graph.append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(this.links)
             .enter().append("line")
-            .attr("stroke-width", d => Math.sqrt(d.weight));
+            .attr("stroke-width", d => Math.sqrt(d.weight))
+            .attr("class", "links")
 
         simulation
             .nodes(this.nodes)
@@ -107,31 +112,37 @@ class Graph extends Component {
         simulation.force("link")
             .links(this.links)
 
-        const node = svg.append("g")
+        const node = graph.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
             .data(this.nodes)
             .enter()
             .append('circle')
-            .attr('r', g => g.weight ? getRadius(g.weight) : 5 * 2)
+            .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
             .attr('fill', g => g.type === 'genre' ? 'blue' : 'red')
+            .attr("class", g => g.type)
+            .attr("id", g => `node_${g.id}`)
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
 
-        const text = svg.append("g")
-        .attr("class", "texts")
-        .selectAll("circle")
-        .data(this.nodes)
-        .enter()
-        .append("text")
-        .text(d => d.name)
-        .attr("text-anchor", "middle")
-        .on("click", (d,y) => {console.log(d);console.log(y);})
+        const text = graph.append("g")
+            .attr("class", "texts")
+            .selectAll("circle")
+            .data(this.nodes)
+            .enter()
+            .append("text")
+            .text(d => d.name)
+            .attr("text-anchor", "middle")
 
         node.append("title")
             .text(d => d.id);
+
+        const zoom_svg = zoom()
+            .on("zoom", () => graph.attr('transform', event.transform));
+
+        svg.call(zoom_svg);
 
         function ticked() {
             link
@@ -146,9 +157,9 @@ class Graph extends Component {
 
             text
                 .attr("x", d => d.x)
-                .attr("y", d => (d.weight ? d.y + getRadius(d.weight)/8 : d.y));
+                .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
         }
-        
+
         function getRadius(weight) {
             const max = 60;
             const min = 10;
