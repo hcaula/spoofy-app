@@ -47,7 +47,7 @@ class Graph extends Component {
         const height = +svg.attr("height");
 
         /* Size of the user circle radius */
-        const user_radius = 20;
+        const user_radius = 100;
 
         /* Physics simualations properties */
         const simulation = forceSimulation()
@@ -96,14 +96,16 @@ class Graph extends Component {
             .data(this.userNodes)
             .enter()
             .append('foreignObject')
-            .attr("transform", `translate(-${user_radius*5},-${user_radius*5})`)
+            .attr("transform", `translate(-${user_radius / 2},-${user_radius / 2})`)
             .attr('class', 'u_img')
             .attr('height', user_radius)
             .attr('width', user_radius)
             .append('xhtml:img')
+            .attr("height", "100%")
+            .attr("width", "100%")
             .attr('src', u => u.image)
             .attr("id", g => `node_${g.id}`)
-            .attr("style", "border-radius: 100px")
+            .attr("style", "border-radius: 100%")
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -125,8 +127,15 @@ class Graph extends Component {
                 graph.attr('transform', event.transform)
 
                 /* Forces users' nodes to remain a constant size */
-                selectAll('.user')
-                    .attr('r', () => user_radius / event.transform.k)
+                selectAll('.u_img')
+                    .attr('height', () => user_radius / event.transform.k)
+                    .attr('width', () => user_radius / event.transform.k)
+
+                /* Translates images after zoom */
+                const val = user_radius / event.transform.k / 2;
+                selectAll('foreignObject')
+                    .attr("transform",
+                    `translate(-${val},-${val})`);
             });
 
         /* Calls zoom simulation */
@@ -150,7 +159,7 @@ class Graph extends Component {
 
             selectAll(".u_img")
                 .attr('x', d => d.x)
-                .attr('y', d => d.y)
+                .attr('y', d => d.y);
 
             text
                 .attr("x", d => d.x)
