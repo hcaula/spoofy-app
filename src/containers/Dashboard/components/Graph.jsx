@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { select, selectAll } from 'd3-selection';
-import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
+import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
 import { event } from 'd3';
@@ -22,7 +22,7 @@ class Graph extends Component {
         super(props);
         this.user = this.props.user;
         this.users = this.props.users;
-        this.default_weight = 5;
+        this.default_weight = 4;
     }
 
     init() {
@@ -44,7 +44,7 @@ class Graph extends Component {
             u.genres.forEach((g, i) => {
                 const index = searchByField(g.name, 'name', this.genreNodes);
                 if (index > -1) this.genreNodes[index].weight += g.weight;
-                else this.genreNodes.push({
+                else if (g.weight > this.default_weight) this.genreNodes.push({
                     id: g._id,
                     name: g.name,
                     type: 'genre',
@@ -60,7 +60,8 @@ class Graph extends Component {
             return {
                 id: u._id,
                 image: u.images[0].url,
-                type: 'user'
+                type: 'user',
+                name: u.display_name
             }
         });
     }
@@ -90,12 +91,13 @@ class Graph extends Component {
         const graph = svg.append('g');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
-        const user_radius = 10;
+        const user_radius = 20;
 
         const simulation = forceSimulation()
             .force("link", forceLink().id(d => d.id).distance(200))
             .force("charge", forceManyBody())
-            .force("center", forceCenter(width / 2, height / 2));
+            .force("center", forceCenter(width / 2, height / 2))
+            .force('collision', forceCollide().radius(d => 100));
 
         const link = graph.append("g")
             .attr("class", "links")
@@ -140,7 +142,12 @@ class Graph extends Component {
             .text(d => d.id);
 
         const zoom_svg = zoom()
-            .on("zoom", () => graph.attr('transform', event.transform));
+            .on("zoom", () => {
+                graph.attr('transform', event.transform) 
+
+                selectAll('.user')
+                .attr('r', () => user_radius/event.transform.k)
+            });
 
         svg.call(zoom_svg);
 
