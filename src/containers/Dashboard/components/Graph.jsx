@@ -4,7 +4,7 @@ import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } 
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
 import { scaleLinear } from 'd3-scale';
-import { event, extent, interpolateHcl, rgb } from 'd3';
+import { event, extent } from 'd3';
 
 import everynoise1 from '../../../assets/jsons/everynoise1.json';
 import everynoise2 from '../../../assets/jsons/everynoise2.json';
@@ -22,8 +22,7 @@ class Graph extends Component {
         this.users = this.props.users;
 
         /* The minimum weight to which have a link between an user and a genre */
-        this.default_weight = 4;
-
+        this.default_weight = 3;
     }
 
     componentDidMount() {
@@ -53,11 +52,16 @@ class Graph extends Component {
         /* Size of the user circle radius */
         const user_radius = 100;
 
-        const ex = extent(everynoise1.genres.map(n => n.top));
+        const ex_top = extent(everynoise1.genres.map(n => n.top));
+        const ex_left = extent(everynoise1.genres.map(n => n.left));
 
-        const color = scaleLinear()
-            .domain([ex[0], ex[1]])
-            .range([rgb("#007AFF"), rgb('#FFF500')]);
+        const green_scale = scaleLinear()
+            .domain([ex_top[0], ex_top[1]])
+            .range([0, 255]);
+
+        const blue_scale = scaleLinear()
+            .domain([ex_left[0], ex_left[1]])
+            .range([0, 255]);
 
         /* Physics simualations properties */
         const simulation = forceSimulation()
@@ -92,7 +96,12 @@ class Graph extends Component {
             .enter()
             .append('circle')
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
-            .attr('fill', g => color(everynoise2[g.name].top))
+            .attr('fill', g => {
+                const red = 125;
+                const green = green_scale(everynoise2[g.name].top);
+                const blue = blue_scale(everynoise2[g.name].left);
+                return `rgb(${red},${green},${blue})`;
+            })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
             .call(drag()
@@ -153,19 +162,19 @@ class Graph extends Component {
                     .attr('style', d => {
                         const ratio = d.weight / 4;
                         return `opacity: ${event.transform.k * ratio}`
-                    })
+                    });
 
                 selectAll('.link')
                     .attr('style', d => {
                         const ratio = d.weight / 4;
                         return `opacity: ${event.transform.k * ratio}`
-                    })
+                    });
 
                 selectAll('.txt')
                     .attr('style', d => {
                         const ratio = d.weight / 4;
                         return `opacity: ${event.transform.k * ratio}`
-                    })
+                    });
             });
 
         /* Calls zoom simulation */
