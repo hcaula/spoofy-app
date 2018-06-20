@@ -74,7 +74,7 @@ class Graph extends Component {
             .attr("stroke-width", d => Math.sqrt(d.weight))
             .attr("class", "links")
 
-        /* Creates nodes SVG eleents */
+        /* Creates genre nodes SVG circle */
         const g_node = graph.append("g")
             .attr("class", "g_nodes")
             .selectAll("circle")
@@ -90,6 +90,7 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended))
 
+        /* Creates user nodes SVG images */
         const u_node = graph.append("g")
             .attr("class", "u_nodes")
             .selectAll("circle")
