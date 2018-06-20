@@ -48,9 +48,13 @@ svg {
     stroke-opacity: 0.6;
 }
   
-.nodes circle {
+circle {
     stroke: #fff;
     stroke-width: 1.5px;
 
     overflow: hidden;
+}
+
+.txt {
+    font-size: 30px;
 }

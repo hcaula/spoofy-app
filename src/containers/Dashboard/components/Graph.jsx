@@ -3,9 +3,12 @@ import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
-import { event } from 'd3';
+import { scaleLinear } from 'd3-scale';
+import { event, extent, interpolateHcl, rgb } from 'd3';
 
-import { GraphHelper } from '../../../utils/'
+import everynoise1 from '../../../assets/jsons/everynoise1.json';
+import everynoise2 from '../../../assets/jsons/everynoise2.json';
+import { GraphHelper } from '../../../utils/';
 
 class Graph extends Component {
 
@@ -20,6 +23,7 @@ class Graph extends Component {
 
         /* The minimum weight to which have a link between an user and a genre */
         this.default_weight = 4;
+
     }
 
     componentDidMount() {
@@ -49,6 +53,12 @@ class Graph extends Component {
         /* Size of the user circle radius */
         const user_radius = 100;
 
+        const ex = extent(everynoise1.genres.map(n => n.top));
+
+        const color = scaleLinear()
+            .domain([ex[0], ex[1]])
+            .range([rgb("#007AFF"), rgb('#FFF500')]);
+
         /* Physics simualations properties */
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id).distance(200))
@@ -72,7 +82,7 @@ class Graph extends Component {
             .data(this.links)
             .enter().append("line")
             .attr("stroke-width", d => Math.sqrt(d.weight))
-            .attr("class", "links")
+            .attr("class", "link")
 
         /* Creates genre nodes SVG circle */
         const g_node = graph.append("g")
@@ -82,7 +92,7 @@ class Graph extends Component {
             .enter()
             .append('circle')
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
-            .attr('fill', 'blue')
+            .attr('fill', g => color(everynoise2[g.name].top))
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
             .call(drag()
@@ -116,11 +126,12 @@ class Graph extends Component {
         const text = graph.append("g")
             .attr("class", "texts")
             .selectAll("circle")
-            .data(this.nodes)
+            .data(this.genreNodes)
             .enter()
             .append("text")
+            .attr('class', 'txt')
             .text(d => (d.type == 'genre' ? d.name : ''))
-            .attr("text-anchor", "middle");
+            .attr("text-anchor", "middle")
 
         /* Zoom simulaton */
         const zoom_svg = zoom()
@@ -136,7 +147,25 @@ class Graph extends Component {
                 const val = user_radius / event.transform.k / 2;
                 selectAll('foreignObject')
                     .attr("transform",
-                    `translate(-${val},-${val})`);
+                        `translate(-${val},-${val})`);
+
+                selectAll('.genre')
+                    .attr('style', d => {
+                        const ratio = d.weight / 4;
+                        return `opacity: ${event.transform.k * ratio}`
+                    })
+
+                selectAll('.link')
+                    .attr('style', d => {
+                        const ratio = d.weight / 4;
+                        return `opacity: ${event.transform.k * ratio}`
+                    })
+
+                selectAll('.txt')
+                    .attr('style', d => {
+                        const ratio = d.weight / 4;
+                        return `opacity: ${event.transform.k * ratio}`
+                    })
             });
 
         /* Calls zoom simulation */
@@ -169,9 +198,9 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = 60;
-            const min = 10;
-            const mult = weight * 2;
+            const max = 100;
+            const min = 40;
+            const mult = weight * 10;
 
             if (mult < min) return min;
             if (mult > max) return max;
