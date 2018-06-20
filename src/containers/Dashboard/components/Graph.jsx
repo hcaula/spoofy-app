@@ -11,17 +11,32 @@ class Graph extends Component {
 
     constructor(props) {
         super(props);
+
+        /* Logged user */
         this.user = this.props.user;
+
+        /* All the users in our system */
         this.users = this.props.users;
+
+        /* The minimum weight to which have a link between an user and a genre */
         this.default_weight = 4;
     }
 
     componentDidMount() {
+
+        /* Preparing the genre nodes based on the users' genres */
         this.genreNodes = GraphHelper.setGenreNodes(this.users, this.default_weight);
+
+        /* Preparing the user nodes */
         this.userNodes = GraphHelper.setUserNodes(this.users);
+
+        /* Concatenate genre and user nodes */
         this.nodes = this.genreNodes.concat(this.userNodes)
+
+        /* Create the links between the nodes */
         this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
 
+        /* Call familiar D3 function */
         this.drawGraph();
     }
 
@@ -30,14 +45,27 @@ class Graph extends Component {
         const graph = svg.append('g');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
+
+        /* Size of the user circle radius */
         const user_radius = 20;
 
+        /* Physics simualations properties */
         const simulation = forceSimulation()
-            .force("link", forceLink().id(d => d.id).distance(200))
-            .force("charge", forceManyBody())
-            .force("center", forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 200));
+            .force('link', forceLink().id(d => d.id).distance(200))
+            .force('charge', forceManyBody())
+            .force('center', forceCenter(width / 2, height / 2))
+            .force('collision', forceCollide().radius(d => 200))
 
+        /* Calls 'ticked' function every subsecond */
+        simulation
+            .nodes(this.nodes)
+            .on("tick", ticked)
+
+        /* Forces links */
+        simulation.force("link")
+            .links(this.links)
+
+        /* Creates links SVG elements */
         const link = graph.append("g")
             .attr("class", "links")
             .selectAll("line")
@@ -46,13 +74,7 @@ class Graph extends Component {
             .attr("stroke-width", d => Math.sqrt(d.weight))
             .attr("class", "links")
 
-        simulation
-            .nodes(this.nodes)
-            .on("tick", ticked)
-
-        simulation.force("link")
-            .links(this.links)
-
+        /* Creates nodes SVG eleents */
         const node = graph.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
@@ -68,6 +90,7 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended))
 
+        /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
             .attr("class", "texts")
             .selectAll("circle")
@@ -75,21 +98,22 @@ class Graph extends Component {
             .enter()
             .append("text")
             .text(d => d.name)
-            .attr("text-anchor", "middle")
+            .attr("text-anchor", "middle");
 
-        node.append("title")
-            .text(d => d.id);
-
+        /* Zoom simulaton */
         const zoom_svg = zoom()
             .on("zoom", () => {
                 graph.attr('transform', event.transform) 
 
+                /* Forces users' nodes to remain a constant size */
                 selectAll('.user')
                 .attr('r', () => user_radius/event.transform.k)
             });
 
+        /* Calls zoom simulation */
         svg.call(zoom_svg);
 
+        /* Function that happens every subsecond */
         function ticked() {
             link
                 .attr("x1", function (d) { return d.source.x; })
@@ -106,6 +130,7 @@ class Graph extends Component {
                 .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
         }
 
+        /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
             const max = 60;
             const min = 10;
