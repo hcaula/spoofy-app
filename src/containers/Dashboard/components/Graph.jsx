@@ -75,16 +75,35 @@ class Graph extends Component {
             .attr("class", "links")
 
         /* Creates nodes SVG eleents */
-        const node = graph.append("g")
-            .attr("class", "nodes")
+        const g_node = graph.append("g")
+            .attr("class", "g_nodes")
             .selectAll("circle")
-            .data(this.nodes)
+            .data(this.genreNodes)
             .enter()
             .append('circle')
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
-            .attr('fill', g => g.type === 'genre' ? 'blue' : 'red')
-            .attr("class", g => g.type)
+            .attr('fill', 'blue')
+            .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
+            .call(drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+
+        const u_node = graph.append("g")
+            .attr("class", "u_nodes")
+            .selectAll("circle")
+            .data(this.userNodes)
+            .enter()
+            .append('foreignObject')
+            .attr("transform", `translate(-${user_radius*5},-${user_radius*5})`)
+            .attr('class', 'u_img')
+            .attr('height', user_radius)
+            .attr('width', user_radius)
+            .append('xhtml:img')
+            .attr('src', u => u.image)
+            .attr("id", g => `node_${g.id}`)
+            .attr("style", "border-radius: 100px")
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -97,17 +116,17 @@ class Graph extends Component {
             .data(this.nodes)
             .enter()
             .append("text")
-            .text(d => d.name)
+            .text(d => (d.type == 'genre' ? d.name : ''))
             .attr("text-anchor", "middle");
 
         /* Zoom simulaton */
         const zoom_svg = zoom()
             .on("zoom", () => {
-                graph.attr('transform', event.transform) 
+                graph.attr('transform', event.transform)
 
                 /* Forces users' nodes to remain a constant size */
                 selectAll('.user')
-                .attr('r', () => user_radius/event.transform.k)
+                    .attr('r', () => user_radius / event.transform.k)
             });
 
         /* Calls zoom simulation */
@@ -121,9 +140,17 @@ class Graph extends Component {
                 .attr("x2", function (d) { return d.target.x; })
                 .attr("y2", function (d) { return d.target.y; });
 
-            node
+            g_node
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y);
+
+            u_node
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+            selectAll(".u_img")
+                .attr('x', d => d.x)
+                .attr('y', d => d.y)
 
             text
                 .attr("x", d => d.x)
