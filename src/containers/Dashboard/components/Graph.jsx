@@ -5,16 +5,7 @@ import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
 import { event } from 'd3';
 
-const searchByField = function (value, param, array) {
-    let index = -1;
-    array.forEach((el, i) => {
-        if (el[param] === value) {
-            index = i;
-            return;
-        }
-    });
-    return index;
-}
+import { GraphHelper } from '../../../utils/'
 
 class Graph extends Component {
 
@@ -25,68 +16,16 @@ class Graph extends Component {
         this.default_weight = 4;
     }
 
-    init() {
-        this.setGenreNodes();
-        this.setUserNodes();
-
-        this.nodes = this.genreNodes.concat(this.userNodes)
-        this.setLinks();
-        this.createGraph();
-    }
-
     componentDidMount() {
-        this.init()
+        this.genreNodes = GraphHelper.setGenreNodes(this.users, this.default_weight);
+        this.userNodes = GraphHelper.setUserNodes(this.users);
+        this.nodes = this.genreNodes.concat(this.userNodes)
+        this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
+
+        this.drawGraph();
     }
 
-    setGenreNodes() {
-        this.genreNodes = [];
-        this.users.forEach(u => {
-            u.genres.forEach((g, i) => {
-                const index = searchByField(g.name, 'name', this.genreNodes);
-                if (index > -1) this.genreNodes[index].weight += g.weight;
-                else if (g.weight > this.default_weight) this.genreNodes.push({
-                    id: g._id,
-                    name: g.name,
-                    type: 'genre',
-                    weight: g.weight
-                });
-            });
-        });
-        this.genreNodes = this.genreNodes.sort((a, b) => b.weight - a.weight);
-    }
-
-    setUserNodes() {
-        this.userNodes = this.users.map(u => {
-            return {
-                id: u._id,
-                image: u.images[0].url,
-                type: 'user',
-                name: u.display_name
-            }
-        });
-    }
-
-    setLinks() {
-        this.links = [];
-        this.users.forEach(u => {
-            u.genres.forEach(g => {
-                if (g.weight > this.default_weight) {
-                    const index = searchByField(g.name, 'name', this.genreNodes);
-                    let id;
-                    if (index > -1) id = this.genreNodes[index].id;
-                    else id = g._id;
-                    this.links.push({
-                        source: u._id,
-                        target: id,
-                        weight: g.weight,
-                        name: g.name
-                    });
-                }
-            });
-        });
-    }
-
-    createGraph() {
+    drawGraph() {
         const svg = select('svg');
         const graph = svg.append('g');
         const width = +svg.attr("width");
@@ -97,7 +36,7 @@ class Graph extends Component {
             .force("link", forceLink().id(d => d.id).distance(200))
             .force("charge", forceManyBody())
             .force("center", forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 100));
+            .force('collision', forceCollide().radius(d => 200));
 
         const link = graph.append("g")
             .attr("class", "links")
