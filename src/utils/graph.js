@@ -34,7 +34,7 @@ class GraphHelper {
         const userNodes = users.map(u => {
             return {
                 id: u._id,
-                image: u.images[0].url,
+                image: u.image.url,
                 type: 'user',
                 name: u.display_name
             }

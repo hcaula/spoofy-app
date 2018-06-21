@@ -14,8 +14,7 @@ export default class Profile extends Component {
             return <Redirect to="/login"/>
         }
         
-        const url = user.images[0].url;
-        console.log(user.images[0])
+        const url = user.image.url;
         return (
             <div className="profile">
                 <Card centered>
