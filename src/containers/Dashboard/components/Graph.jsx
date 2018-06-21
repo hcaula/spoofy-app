@@ -22,7 +22,7 @@ class Graph extends Component {
         this.users = this.props.users;
 
         /* The minimum weight to which have a link between an user and a genre */
-        this.default_weight = 3;
+        this.default_weight = 4;
     }
 
     componentDidMount() {
@@ -100,10 +100,12 @@ class Graph extends Component {
             .append('circle')
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
             .attr('fill', g => {
-                const red = 125;
-                const green = parseInt(green_scale(everynoise2[g.name].top), 10);
-                const blue = parseInt(blue_scale(everynoise2[g.name].left), 10);
-                return `rgb(${red},${green},${blue})`;
+                if (everynoise2[g.name]) {
+                    const red = 125;
+                    const green = parseInt(green_scale(everynoise2[g.name].top), 10);
+                    const blue = parseInt(blue_scale(everynoise2[g.name].left), 10);
+                    return `rgb(${red},${green},${blue})`;
+                } else return 'white';
             })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
