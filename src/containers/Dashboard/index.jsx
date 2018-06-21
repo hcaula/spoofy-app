@@ -42,8 +42,10 @@ class Dashboard extends Component {
 
                 <div className="Dashboard">
                     <div className="DashboardTitle">
-                        <p>{`thank you for joining, ${user.display_name}`}</p>
-                        <p>{`please, select the people you believe have similar taste in music with you`}</p>
+                        <h1>{`thank you for joining, ${user.display_name}`}</h1>
+                        <p>to <b>zoom</b>, use scroll</p>
+                        <p>to <b>move</b>, click on a white space and drag</p>
+                        <p>you can also drag nodes around</p>
                     </div>
 
                     <div className="sidebar-toggle">
