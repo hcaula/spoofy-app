@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
+import logo from '../../../assets/imgs/spotify_green.png';
+import './index.css';
 
-import '../styles/Spotify.css';
-import logo from '../assets/imgs/spotify_green.png';
+export class SpotifyButton extends Component {
 
-export class Spotify extends Component {
-
-    spotifyUrl() {
+    render() {
         const client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
         const response_type = 'code';
         const redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
-        const scope = 'user-read-email user-read-private user-top-read';
+        const scope = 'user-read-email user-read-private user-top-read playlist-modify-public playlist-modify-private playlist-read-collaborative user-modify-playback-state';
 
         const host = 'accounts.spotify.com';
         let path = '/authorize/?';
@@ -21,21 +20,17 @@ export class Spotify extends Component {
 
         const uri = `https://${host}${path}`;
 
-        return uri;
-    }
-
-    render() {
         return (
-            <a href={this.spotifyUrl()} className="SpotifyLogin">
+            <a href={uri} className="SpotifyLogin">
                 <div className="SpotifySpotify">
                     <img src={logo} alt="spoofy" />
                 </div>
                 <div className="SpotifyLoginLink">
-                    login with Spotify
+                    {`login with Spotify`}
                 </div>
             </a>
         );
     }
 }
 
-export default Spotify;
+export default SpotifyButton;
