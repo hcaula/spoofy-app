@@ -50,7 +50,7 @@ class Graph extends Component {
         const graph = svg.append('g');
 
         /* Size of the user circle radius */
-        const user_radius = 100;
+        const user_radius = 75;
 
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
@@ -65,8 +65,6 @@ class Graph extends Component {
         const blue_scale = scaleLinear()
             .domain([ex_left[0], ex_left[1]])
             .range([0, 255]);
-
-        console.log(green_scale(500));
 
         /* Physics simualations properties */
         const simulation = forceSimulation()
@@ -103,8 +101,8 @@ class Graph extends Component {
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
             .attr('fill', g => {
                 const red = 125;
-                const green = green_scale(everynoise2[g.name].top);
-                const blue = blue_scale(everynoise2[g.name].left);
+                const green = parseInt(green_scale(everynoise2[g.name].top), 10);
+                const blue = parseInt(blue_scale(everynoise2[g.name].left), 10);
                 return `rgb(${red},${green},${blue})`;
             })
             .attr("class", 'genre')

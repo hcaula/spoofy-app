@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Card, Icon, Image, Button } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom';
 import { API } from '../../utils';
-import sample from '../../assets/imgs/sample.png';
 import './index.css';
 
 export default class Profile extends Component {
