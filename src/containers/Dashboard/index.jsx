@@ -23,7 +23,8 @@ class Dashboard extends Component {
 
     async loadData() {
         const users = await API.getAllUsers();
-        this.setState({ ready: true, users });
+        if (users) this.setState({ ready: true, users });
+        else this.setState({ redirect: true });
     }
 
     render() {
@@ -34,9 +35,7 @@ class Dashboard extends Component {
 
         const user = API.getUser();
 
-        if (!user) {
-            return <Redirect to="/login"/>
-        }        
+        if (!user || this.state.redirect) return <Redirect to="/login"/>
 
         return (
             <Sidebar.Pushable>

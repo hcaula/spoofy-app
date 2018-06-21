@@ -62,22 +62,19 @@ class API {
             throw new Error(error);
         }
     }
-    
+
     async getAllUsers() {
         const options = {
             headers: {
                 'access_token': this.token
             }
         };
-        try {
-            const response = await API.request('/api/v2/all/users', options);
-            if (response.status !== 200) {
-                throw new Error('Request not successfull');
-            }
+        const response = await API.request('/api/v2/all/users', options);
+        if (response.status !== 200) {
+            return null
+        } else {
             const body = await response.json();
             return body.users;
-        } catch (error) {
-            throw new Error(error);
         }
     }
 
