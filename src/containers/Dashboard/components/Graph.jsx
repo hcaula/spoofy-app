@@ -22,7 +22,7 @@ class Graph extends Component {
         this.users = this.props.users;
 
         /* The minimum weight to which have a link between an user and a genre */
-        this.default_weight = 3;
+        this.default_weight = 4;
     }
 
     componentDidMount() {
