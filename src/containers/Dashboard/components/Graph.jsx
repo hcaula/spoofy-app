@@ -32,12 +32,8 @@ class Graph extends Component {
         this.createGraph();
     }
 
-    componentDidMount() { 
-        this.init()
-    }
-
-    componentDidUpdate() {
-        this.init()
+    componentDidMount() {
+        this.init();
     }
 
     setGenreNodes() {

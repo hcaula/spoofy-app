@@ -73,6 +73,7 @@ class Dashboard extends Component {
                     icon='labeled'
                     vertical
                     inverted
+                    id="sidebar"
                 >
                     <div className='playlist'>
                         <Image src={sample} size='small' circular centered/>

@@ -36,6 +36,10 @@ svg {
     top: 0;
     right: 0;
     margin: 10px;
+    z-index: 999;
+}
+
+#sidebar {
     z-index: 901;
 }
 
