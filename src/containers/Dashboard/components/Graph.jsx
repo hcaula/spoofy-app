@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import { drag } from 'd3-drag';
-import { zoom } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { scaleLinear } from 'd3-scale';
 import { event, extent } from 'd3';
 
@@ -45,12 +45,15 @@ class Graph extends Component {
 
     drawGraph() {
         const svg = select('svg');
-        const graph = svg.append('g');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
+        const graph = svg.append('g');
 
         /* Size of the user circle radius */
         const user_radius = 100;
+
+        /* Initial scale for zoom */
+        const initial_zoom = 0.4;
 
         const ex_top = extent(everynoise1.genres.map(n => n.top));
         const ex_left = extent(everynoise1.genres.map(n => n.left));
@@ -125,7 +128,11 @@ class Graph extends Component {
             .attr("width", "100%")
             .attr('src', u => u.image)
             .attr("id", g => `node_${g.id}`)
-            .attr("style", "border-radius: 100%")
+            .attr("style", u => {
+                let style = "border-radius: 100%;";
+                if (u.id === this.user._id) style += "border: 5px solid red;"
+                return style;
+            })
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -139,7 +146,8 @@ class Graph extends Component {
             .enter()
             .append("text")
             .attr('class', 'txt')
-            .text(d => (d.type == 'genre' ? d.name : ''))
+            .attr('id', d => `txt_${d.id}`)
+            .text(d => d.name)
             .attr("text-anchor", "middle")
 
         /* Zoom simulaton */
@@ -178,7 +186,11 @@ class Graph extends Component {
             });
 
         /* Calls zoom simulation */
-        svg.call(zoom_svg);
+        svg.call(zoom_svg)
+            .call(zoom_svg.transform,
+                zoomIdentity
+                    .translate(width * initial_zoom, height * initial_zoom)
+                    .scale(initial_zoom));
 
         /* Function that happens every subsecond */
         function ticked() {
