@@ -66,6 +66,8 @@ class Graph extends Component {
             .domain([ex_left[0], ex_left[1]])
             .range([0, 255]);
 
+        console.log(green_scale(500));
+
         /* Physics simualations properties */
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id).distance(200))

@@ -14,6 +14,10 @@ class Dashboard extends Component {
         ready: false,
         users: []
     }
+
+    componentDidMount() {
+        this.loadData();
+    }
     
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
@@ -32,9 +36,7 @@ class Dashboard extends Component {
 
         if (!user) {
             return <Redirect to="/login"/>
-        }
-
-        this.loadData();
+        }        
 
         return (
             <Sidebar.Pushable>
