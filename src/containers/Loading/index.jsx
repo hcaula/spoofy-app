@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import queryString from 'query-string';
 import { API } from '../../utils';
 import './index.css';
 
+function getParameterByName(name, url) {
+    name = name.replace(/[\[\]]/g, "\\$&");
+    const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 export default class Loading extends Component {
-    
+
     state = {
         path: null
     }
 
     async componentDidMount() {
-        let parsed = queryString.parse(window.location.search);
-        const token = parsed.token;
+        const token = getParameterByName('token', window.location.search);
 
         if (!token) {
             this.setState({
@@ -23,19 +30,18 @@ export default class Loading extends Component {
 
         try {
             await API.login(token);
-            parsed = queryString.parse(window.location.search);
-            const isNew = parsed.new === 'true';
-            if (isNew) {
+            const isNew = getParameterByName('isNew', window.location.search);
+            if (isNew === 'true') {
                 await API.requestTopInfo();
             }
             this.setState({
-                path: isNew ? '/profile':'/'
+                path: isNew ? '/profile' : '/'
             });
         } catch (error) {
             console.log(error);
         }
     }
-    
+
     render() {
         if (!this.state.path) {
             return (
@@ -45,7 +51,7 @@ export default class Loading extends Component {
             );
         }
 
-        return <Redirect to={this.state.path}/>;
+        return <Redirect to={this.state.path} />;
     }
-    
+
 }
