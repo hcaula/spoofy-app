@@ -14,7 +14,7 @@ class GraphHelper {
     setGenreNodes(users, default_weight) {
         let genreNodes = [];
         users.forEach(u => {
-            u.genres.forEach((g, i) => {
+            u.genres.forEach(g => {
                 const index = searchByField(g.name, 'name', genreNodes);
                 if (index > -1) genreNodes[index].weight += g.weight;
                 else if (g.weight > default_weight) genreNodes.push({

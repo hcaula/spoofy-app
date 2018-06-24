@@ -44,6 +44,7 @@ class Graph extends Component {
     }
 
     drawGraph() {
+        const users_length = this.users.length;
         const svg = select('svg');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
@@ -55,23 +56,27 @@ class Graph extends Component {
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
 
+        /* Getting max and min values for everynoise genre positions */
         const ex_top = extent(everynoise1.genres.map(n => n.top));
         const ex_left = extent(everynoise1.genres.map(n => n.left));
 
+        /* Creating colour scales */
         const green_scale = scaleLinear()
             .domain([ex_top[0], ex_top[1]])
             .range([0, 255]);
-
+            
         const blue_scale = scaleLinear()
             .domain([ex_left[0], ex_left[1]])
             .range([0, 255]);
 
         /* Physics simualations properties */
         const simulation = forceSimulation()
-            .force('link', forceLink().id(d => d.id).distance(200))
+            .force('link', forceLink().id(d => d.id)
+                .strength(d =>0.8)
+                .distance(d => getRadius(d.weight) * 5))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 200))
+            .force('collision', forceCollide().radius(d => 400));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -100,10 +105,12 @@ class Graph extends Component {
             .append('circle')
             .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
             .attr('fill', g => {
-                const red = 125;
-                const green = parseInt(green_scale(everynoise2[g.name].top), 10);
-                const blue = parseInt(blue_scale(everynoise2[g.name].left), 10);
-                return `rgb(${red},${green},${blue})`;
+                if (everynoise2[g.name]) {
+                    const red = 125;
+                    const green = parseInt(green_scale(everynoise2[g.name].top), 10);
+                    const blue = parseInt(blue_scale(everynoise2[g.name].left), 10);
+                    return `rgb(${red},${green},${blue})`;
+                } else return 'white';
             })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
@@ -173,10 +180,7 @@ class Graph extends Component {
                     });
 
                 selectAll('.link')
-                    .attr('style', d => {
-                        const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
-                    });
+                    .attr('style', d => `opacity: ${event.transform.k}`);
 
                 selectAll('.txt')
                     .attr('style', d => {
@@ -195,10 +199,10 @@ class Graph extends Component {
         /* Function that happens every subsecond */
         function ticked() {
             link
-                .attr("x1", function (d) { return d.source.x; })
-                .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; });
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
             g_node
                 .attr("cx", d => d.x)
@@ -219,7 +223,7 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = 100;
+            const max = users_length * 10;
             const min = 40;
             const mult = weight * 10;
 
