@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { Sidebar, Button, Image, Menu, Icon } from 'semantic-ui-react';
 import Graph from './components/Graph';
+import SongRow from './components/SongRow';
 import { API } from '../../utils';
 import './index.css';
 import sample from '../../assets/imgs/sample.png';
@@ -10,7 +11,7 @@ class Dashboard extends Component {
 
     
     state = {
-        visible: false,
+        visible: true,
         ready: false,
         users: []
     }
@@ -79,7 +80,13 @@ class Dashboard extends Component {
                     id="sidebar"
                 >
                     <div className='playlist'>
-                        <Image src={sample} size='small' circular centered/>
+                        <Image src={user.image.url} size='small' circular centered/>
+                        <SongRow/>
+                        <SongRow/>
+                        <SongRow/>
+                        <div className='play'>
+                            <iframe src="https://open.spotify.com/embed?uri=spotify:album:1DFixLWuPkv3KT3TnV35m3" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        </div>
                     </div>
                 </Sidebar>
 

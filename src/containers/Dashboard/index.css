@@ -45,6 +45,23 @@ svg {
 
 .playlist {
     margin-top: 30px;
+    color: white;
+}
+
+.playlist .play {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+}
+
+.playlist .song-row {
+    margin: 20px 10px;
+    color: grey;
+}
+
+.playlist .song-row .name {
+    color: white;
 }
 
 .links line {
