@@ -14,12 +14,17 @@ class Dashboard extends Component {
         ready: false,
         users: []
     }
+
+    componentDidMount() {
+        this.loadData();
+    }
     
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
     async loadData() {
         const users = await API.getAllUsers();
-        this.setState({ ready: true, users });
+        if (users) this.setState({ ready: true, users });
+        else this.setState({ redirect: true });
     }
 
     render() {
@@ -30,19 +35,17 @@ class Dashboard extends Component {
 
         const user = API.getUser();
 
-        if (!user) {
-            return <Redirect to="/login"/>
-        }
-
-        this.loadData();
+        if (!user || this.state.redirect) return <Redirect to="/login"/>
 
         return (
             <Sidebar.Pushable>
 
                 <div className="Dashboard">
                     <div className="DashboardTitle">
-                        <p>{`thank you for joining, ${user.display_name}`}</p>
-                        <p>{`please, select the people you believe have similar taste in music with you`}</p>
+                        <h1>{`thank you for joining, ${user.display_name}`}</h1>
+                        <p>to <b>zoom</b>, use scroll</p>
+                        <p>to <b>move</b>, click on a white space and drag</p>
+                        <p>you can also drag nodes around</p>
                     </div>
 
                     <div className="sidebar-toggle">

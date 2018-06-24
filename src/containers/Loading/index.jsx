@@ -29,7 +29,7 @@ export default class Loading extends Component {
                 await API.requestTopInfo();
             }
             this.setState({
-                path: isNew ? '/profile':'/'
+                path: '/'
             });
         } catch (error) {
             console.log(error);
