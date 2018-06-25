@@ -10,7 +10,7 @@ const searchByField = function (value, param, array) {
 }
 
 class GraphHelper {
-    
+
     setGenreNodes(users, default_weight) {
         let genreNodes = [];
         users.forEach(u => {
@@ -37,6 +37,21 @@ class GraphHelper {
             type: 'user',
             name: u.display_name
         }));
+    }
+
+    setLinkNodes(links, nodes) {
+        let linkNodes = [];
+        links.forEach(link => {
+            const source = searchByField(link.source, "id", nodes);
+            const target = searchByField(link.target, "id", nodes);
+            linkNodes.push({
+                source: nodes[source],
+                target: nodes[target],
+                type: 'link_node'
+            });
+        });
+
+        return linkNodes;
     }
 
     setLinks(users, genreNodes, default_weight) {

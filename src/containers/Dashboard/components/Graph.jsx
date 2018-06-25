@@ -39,6 +39,8 @@ class Graph extends Component {
         /* Create the links between the nodes */
         this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
 
+        this.linkNodes = GraphHelper.setLinkNodes(this.links, this.nodes);
+
         /* Call familiar D3 function */
         this.drawGraph();
     }
@@ -64,7 +66,7 @@ class Graph extends Component {
         const green_scale = scaleLinear()
             .domain([ex_top[0], ex_top[1]])
             .range([0, 255]);
-            
+
         const blue_scale = scaleLinear()
             .domain([ex_left[0], ex_left[1]])
             .range([0, 255]);
@@ -72,8 +74,8 @@ class Graph extends Component {
         /* Physics simualations properties */
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
-                .strength(d =>0.8)
-                .distance(d => getRadius(d.weight) * 5))
+                .strength(0.8)
+                .distance(d => (d.weight ? (1/d.weight) * 20 : 20)))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
             .force('collision', forceCollide().radius(d => 400));
@@ -81,7 +83,7 @@ class Graph extends Component {
         /* Calls 'ticked' function every subsecond */
         simulation
             .nodes(this.nodes)
-            .on("tick", ticked)
+            .on("tick", ticked);
 
         /* Forces links */
         simulation.force("link")
@@ -143,7 +145,7 @@ class Graph extends Component {
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
-                .on("end", dragended))
+                .on("end", dragended));
 
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
