@@ -10,6 +10,8 @@ import everynoise1 from '../../../assets/jsons/everynoise1.json';
 import everynoise2 from '../../../assets/jsons/everynoise2.json';
 import { GraphHelper } from '../../../utils/';
 
+import GenHTML from './InfoHTML'
+
 class Graph extends Component {
 
     constructor(props) {
@@ -75,7 +77,7 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => (d.weight ? (1/d.weight) * 20 : 20)))
+                .distance(d => (d.weight ? (1 / d.weight) * 10 : 20)))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
             .force('collision', forceCollide().radius(d => 400));
@@ -142,10 +144,34 @@ class Graph extends Component {
                 if (u.id === this.user._id) style += "border: 5px solid red;"
                 return style;
             })
+            .on("mouseover", g => {
+                select(`#info_${g.id}`)
+                    .attr("style", "display: absolute");
+            })
+            .on("mouseout", g => {
+                select(`#info_${g.id}`)
+                    .attr("style", "display: none");
+            })
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
+
+        const divs = graph.append("g")
+            .attr("class", "divs")
+            .selectAll("circle")
+            .data(this.userNodes)
+            .enter()
+            .append("foreignObject")
+            .attr("style", "display: none")
+            .attr("id", d => `info_${d.id}`)
+            .attr("class", "div")
+            .attr('height', "100px")
+            .attr('width', "100px")
+            .append("xhtml:div")
+            .attr("height", "100%")
+            .attr("width", "100%")
+            .html(g => GenHTML.genreInfo(g.name, g.id))
 
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
@@ -171,7 +197,7 @@ class Graph extends Component {
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
-                selectAll('foreignObject')
+                selectAll('.u_img')
                     .attr("transform",
                         `translate(-${val},-${val})`);
 
@@ -215,6 +241,10 @@ class Graph extends Component {
                 .attr("cy", d => d.y);
 
             selectAll(".u_img")
+                .attr('x', d => d.x)
+                .attr('y', d => d.y);
+
+            selectAll(".div")
                 .attr('x', d => d.x)
                 .attr('y', d => d.y);
 
