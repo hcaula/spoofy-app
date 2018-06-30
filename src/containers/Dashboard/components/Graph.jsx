@@ -25,6 +25,18 @@ class Graph extends Component {
 
         /* The minimum weight to which have a link between an user and a genre */
         this.default_weight = 4;
+
+        this.selected = [];
+    }
+
+    addOrRemove(g) {
+        const index = this.selected.indexOf(g.name);
+        if (index < 0) this.selected.push(g.name);
+        else this.selected.splice(index, 1);
+
+        console.log(this.selected);
+
+        return index < 0;
     }
 
     componentDidMount() {
@@ -162,6 +174,10 @@ class Graph extends Component {
                     .style("display", "none");
             })
             .on("click", g => {
+                const added = this.addOrRemove(g);
+                select(`#node_${g.id}`)
+                    .style('border', (added ? '20px solid green' : ''));
+
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
