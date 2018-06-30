@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import { drag } from 'd3-drag';
-import { zoom, zoomIdentity } from 'd3-zoom';
+import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
 import { scaleLinear } from 'd3-scale';
-import { event, extent } from 'd3';
+import { event, extent, mouse } from 'd3';
 
 import everynoise1 from '../../../assets/jsons/everynoise1.json';
 import everynoise2 from '../../../assets/jsons/everynoise2.json';
@@ -123,6 +123,13 @@ class Graph extends Component {
             })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
+            .on("click", function (g) {
+                svg.transition()
+                    .duration(500)
+                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .transition(500)
+                    .call(zoom_svg.scaleTo, initial_zoom)
+            })
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -153,6 +160,13 @@ class Graph extends Component {
             .on("mouseout", g => {
                 select(`#info_${g.id}`)
                     .style("display", "none");
+            })
+            .on("click", function (g) {
+                svg.transition()
+                    .duration(500)
+                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .transition(500)
+                    .call(zoom_svg.scaleTo, initial_zoom)
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -203,11 +217,11 @@ class Graph extends Component {
                 selectAll('.user_info')
                     .attr('height', () => div_height / event.transform.k)
                     .attr('width', () => div_width / event.transform.k)
-                    .attr('x', d => d.x - (div_width/2)/current_zoom)
-                    .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom)
+                    .attr('x', d => d.x - (div_width / 2) / current_zoom)
+                    .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
                     .style('font-size', () => {
                         const font_size = 20;
-                        return font_size/current_zoom;
+                        return font_size / current_zoom;
                     })
 
                 /* Translates images after zoom */
@@ -260,8 +274,8 @@ class Graph extends Component {
                 .attr('y', d => d.y);
 
             selectAll(".user_info")
-                .attr('x', d => d.x - (div_width/2)/current_zoom)
-                .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom);
+                .attr('x', d => d.x - (div_width / 2) / current_zoom)
+                .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom);
 
             text
                 .attr("x", d => d.x)
