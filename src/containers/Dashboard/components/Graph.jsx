@@ -203,11 +203,11 @@ class Graph extends Component {
                     .attr('height', () => user_radius / event.transform.k)
                     .attr('width', () => user_radius / event.transform.k)
 
-                /* Forces users' nodes to remain a constant size */
+                /* Forces user info div to remain a constant size and always above user image */
                 selectAll('.user_info')
                     .attr('height', () => div_height / event.transform.k)
                     .attr('width', () => div_width / event.transform.k)
-                    .attr('x', d => d.x)
+                    .attr('x', d => d.x - (div_width/2)/current_zoom)
                     .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom)
 
                 /* Translates images after zoom */
@@ -260,7 +260,7 @@ class Graph extends Component {
                 .attr('y', d => d.y);
 
             selectAll(".user_info")
-                .attr('x', d => d.x)
+                .attr('x', d => d.x - (div_width/2)/current_zoom)
                 .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom);
 
             text
