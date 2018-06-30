@@ -60,6 +60,7 @@ class Graph extends Component {
         /* Size of the user info div */
         const div_height = 100;
         const div_width = 100;
+        const div_margin = 20;
 
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
@@ -206,8 +207,8 @@ class Graph extends Component {
                 selectAll('.user_info')
                     .attr('height', () => div_height / event.transform.k)
                     .attr('width', () => div_width / event.transform.k)
-                    .attr('x', d => d.x - (user_radius/2 / event.transform.k))
-                    .attr('y', d => d.y - (user_radius*2 / event.transform.k))
+                    .attr('x', d => d.x)
+                    .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom)
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
@@ -259,8 +260,8 @@ class Graph extends Component {
                 .attr('y', d => d.y);
 
             selectAll(".user_info")
-                .attr('x', d => d.x - (user_radius/2 / current_zoom))
-                .attr('y', d => d.y - (user_radius*2 / current_zoom));
+                .attr('x', d => d.x)
+                .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom);
 
             text
                 .attr("x", d => d.x)
