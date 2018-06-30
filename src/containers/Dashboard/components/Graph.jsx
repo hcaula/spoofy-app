@@ -10,10 +10,14 @@ import everynoise1 from '../../../assets/jsons/everynoise1.json';
 import everynoise2 from '../../../assets/jsons/everynoise2.json';
 import { GraphHelper } from '../../../utils/';
 
+import GenHTML from './InfoHTML'
+
 class Graph extends Component {
 
     constructor(props) {
         super(props);
+
+        this.getPlaylist = this.props.getPlaylist;
 
         /* Logged user */
         this.user = this.props.user;
@@ -23,6 +27,19 @@ class Graph extends Component {
 
         /* The minimum weight to which have a link between an user and a genre */
         this.default_weight = 4;
+
+        /* Selected users */
+        this.selected = [];
+    }
+
+    addOrRemove(g) {
+        const index = this.selected.indexOf(g.id);
+        if (index < 0) this.selected.push(g.id);
+        else this.selected.splice(index, 1);
+
+        if (this.selected.length > 0) this.getPlaylist(this.selected);
+
+        return index < 0;
     }
 
     componentDidMount() {
@@ -39,11 +56,14 @@ class Graph extends Component {
         /* Create the links between the nodes */
         this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
 
+        this.linkNodes = GraphHelper.setLinkNodes(this.links, this.nodes);
+
         /* Call familiar D3 function */
         this.drawGraph();
     }
 
     drawGraph() {
+        const users_length = this.users.length;
         const svg = select('svg');
         const width = +svg.attr("width");
         const height = +svg.attr("height");
@@ -52,12 +72,19 @@ class Graph extends Component {
         /* Size of the user circle radius */
         const user_radius = 75;
 
+        /* Size of the user info div */
+        const div_height = 200;
+        const div_width = 300;
+
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
+        let current_zoom = initial_zoom;
 
+        /* Getting max and min values for everynoise genre positions */
         const ex_top = extent(everynoise1.genres.map(n => n.top));
         const ex_left = extent(everynoise1.genres.map(n => n.left));
 
+        /* Creating colour scales */
         const green_scale = scaleLinear()
             .domain([ex_top[0], ex_top[1]])
             .range([0, 255]);
@@ -68,15 +95,17 @@ class Graph extends Component {
 
         /* Physics simualations properties */
         const simulation = forceSimulation()
-            .force('link', forceLink().id(d => d.id).distance(200))
+            .force('link', forceLink().id(d => d.id)
+                .strength(0.8)
+                .distance(d => 20))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 200))
+            .force('collision', forceCollide().radius(d => 500));
 
         /* Calls 'ticked' function every subsecond */
         simulation
             .nodes(this.nodes)
-            .on("tick", ticked)
+            .on("tick", ticked);
 
         /* Forces links */
         simulation.force("link")
@@ -109,6 +138,13 @@ class Graph extends Component {
             })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
+            .on("click", g => {
+                svg.transition()
+                    .duration(500)
+                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .transition(500)
+                    .call(zoom_svg.scaleTo, initial_zoom);
+            })
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -130,15 +166,57 @@ class Graph extends Component {
             .attr("width", "100%")
             .attr('src', u => u.image)
             .attr("id", g => `node_${g.id}`)
-            .attr("style", u => {
-                let style = "border-radius: 100%;";
-                if (u.id === this.user._id) style += "border: 5px solid red;"
-                return style;
+            .style('border-radius', '100%')
+            .style('border', u => (u.id === this.user._id) ? '5px solid red' : '')
+            .on("mouseover", g => {
+                select(`#info_${g.id}`)
+                    .style("display", "");
+            })
+            .on("mouseout", g => {
+                select(`#info_${g.id}`)
+                    .style("display", "none");
+            })
+            .on("click", g => {
+                const added = this.addOrRemove(g);
+                select(`#node_${g.id}`)
+                    .style('border', (added ? '20px solid green' : ''));
+
+                svg.transition()
+                    .duration(500)
+                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .transition(500)
+                    .call(zoom_svg.scaleTo, initial_zoom);
             })
             .call(drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
-                .on("end", dragended))
+                .on("end", dragended));
+
+        graph.append("g")
+            .attr("class", "divs")
+            .selectAll("circle")
+            .data(this.userNodes)
+            .enter()
+            .append("foreignObject")
+            .style("display", "none")
+            .attr("id", d => `info_${d.id}`)
+            .attr("class", "user_info")
+            .attr('height', "1000px")
+            .attr('width', "1000px")
+            .append("xhtml:div")
+            .attr("height", "100%")
+            .attr("width", "100%")
+            .html(d => GenHTML.userInfo(d.user))
+
+        // const linkNode = graph.append("g")
+        //     .attr("class", "link-node")
+        //     .selectAll("circle")
+        //     .data(this.linkNodes)
+        //     .enter()
+        //     .append("circle")
+        //     .attr("class", "link-node")
+        //     .attr("r", 20)
+        //     .style("fill", "#ccc")
 
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
@@ -155,6 +233,8 @@ class Graph extends Component {
         /* Zoom simulaton */
         const zoom_svg = zoom()
             .on("zoom", () => {
+                current_zoom = event.transform.k;
+
                 graph.attr('transform', event.transform)
 
                 /* Forces users' nodes to remain a constant size */
@@ -162,28 +242,36 @@ class Graph extends Component {
                     .attr('height', () => user_radius / event.transform.k)
                     .attr('width', () => user_radius / event.transform.k)
 
+                /* Forces user info div to remain a constant size and always above user image */
+                selectAll('.user_info')
+                    .attr('height', () => div_height / event.transform.k)
+                    .attr('width', () => div_width / event.transform.k)
+                    .attr('x', d => d.x - (div_width / 2) / current_zoom)
+                    .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
+                    .style('font-size', () => {
+                        const font_size = 10;
+                        return font_size / current_zoom;
+                    })
+
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
-                selectAll('foreignObject')
+                selectAll('.u_img')
                     .attr("transform",
                         `translate(-${val},-${val})`);
 
                 selectAll('.genre')
-                    .attr('style', d => {
+                    .style('opacity', d => {
                         const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
+                        return event.transform.k * ratio
                     });
 
                 selectAll('.link')
-                    .attr('style', d => {
-                        const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
-                    });
+                    .style('opacity', event.transform.k);
 
                 selectAll('.txt')
-                    .attr('style', d => {
+                    .style('opacity', d => {
                         const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
+                        return event.transform.k * ratio
                     });
             });
 
@@ -197,10 +285,10 @@ class Graph extends Component {
         /* Function that happens every subsecond */
         function ticked() {
             link
-                .attr("x1", function (d) { return d.source.x; })
-                .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; });
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
             g_node
                 .attr("cx", d => d.x)
@@ -214,14 +302,21 @@ class Graph extends Component {
                 .attr('x', d => d.x)
                 .attr('y', d => d.y);
 
+            selectAll(".user_info")
+                .attr('x', d => d.x - (div_width / 2) / current_zoom)
+                .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom);
+
             text
                 .attr("x", d => d.x)
                 .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
+
+            // linkNode.attr("cx", function (d) { return d.x = (d.source.x + d.target.x) * 0.5; })
+            //     .attr("cy", function (d) { return d.y = (d.source.y + d.target.y) * 0.5; });
         }
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = 100;
+            const max = users_length * 10;
             const min = 40;
             const mult = weight * 10;
 
@@ -251,7 +346,9 @@ class Graph extends Component {
 
     render() {
         return (
-            <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}></svg>
+            <div>
+                <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}></svg>
+            </div>
         )
     }
 }
