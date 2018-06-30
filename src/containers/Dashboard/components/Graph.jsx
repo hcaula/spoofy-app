@@ -58,9 +58,8 @@ class Graph extends Component {
         const user_radius = 75;
 
         /* Size of the user info div */
-        const div_height = 100;
-        const div_width = 100;
-        const div_margin = 20;
+        const div_height = 400;
+        const div_width = 300;
 
         /* Initial scale for zoom */
         const initial_zoom = 0.4;

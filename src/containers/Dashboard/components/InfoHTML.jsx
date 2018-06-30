@@ -6,8 +6,9 @@ class InfoHTML {
     userInfo = function(user){
         const html = (
             <div className="userInfo">
-                <p>Hello!</p>
-                <p>{user.display_name}</p>
+                <p><b>{user.display_name}</b></p>
+                <p>Gamers rise up!</p>
+                <p>Bottom Text</p>
             </div>
         )
 

@@ -65,5 +65,5 @@ circle {
 
 .user_info {
     font-size: 20px;
-    border: 3px solid black;
+    background-color: rgba(0,0,0,0.5);
 }
