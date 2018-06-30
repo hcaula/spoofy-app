@@ -145,18 +145,15 @@ class Graph extends Component {
             .attr("width", "100%")
             .attr('src', u => u.image)
             .attr("id", g => `node_${g.id}`)
-            .attr("style", u => {
-                let style = "border-radius: 100%;";
-                if (u.id === this.user._id) style += "border: 5px solid red;"
-                return style;
-            })
+            .style('border-radius', '100%')
+            .style('border', u => (u.id === this.user._id) ? '5px solid red' : '')
             .on("mouseover", g => {
                 select(`#info_${g.id}`)
-                    .attr("style", "display: absolute");
+                    .style("display", "");
             })
             .on("mouseout", g => {
                 select(`#info_${g.id}`)
-                    .attr("style", "display: none");
+                    .style("display", "none");
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -169,7 +166,7 @@ class Graph extends Component {
             .data(this.userNodes)
             .enter()
             .append("foreignObject")
-            .attr("style", "display: none")
+            .style("display", "none")
             .attr("id", d => `info_${d.id}`)
             .attr("class", "user_info")
             .attr('height', "1000px")
@@ -209,6 +206,10 @@ class Graph extends Component {
                     .attr('width', () => div_width / event.transform.k)
                     .attr('x', d => d.x - (div_width/2)/current_zoom)
                     .attr('y', d => d.y - (div_height/current_zoom) - (user_radius/2) / current_zoom)
+                    .style('font-size', () => {
+                        const font_size = 20;
+                        return font_size/current_zoom;
+                    })
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
@@ -217,18 +218,18 @@ class Graph extends Component {
                         `translate(-${val},-${val})`);
 
                 selectAll('.genre')
-                    .attr('style', d => {
+                    .style('opacity', d => {
                         const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
+                        return event.transform.k * ratio
                     });
 
                 selectAll('.link')
-                    .attr('style', d => `opacity: ${event.transform.k}`);
+                    .style('opacity', event.transform.k);
 
                 selectAll('.txt')
-                    .attr('style', d => {
+                    .style('opacity', d => {
                         const ratio = d.weight / 4;
-                        return `opacity: ${event.transform.k * ratio}`
+                        return event.transform.k * ratio
                     });
             });
 
