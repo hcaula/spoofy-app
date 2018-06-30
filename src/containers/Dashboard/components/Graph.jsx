@@ -17,6 +17,8 @@ class Graph extends Component {
     constructor(props) {
         super(props);
 
+        this.getPlaylist = this.props.getPlaylist;
+
         /* Logged user */
         this.user = this.props.user;
 
@@ -26,15 +28,16 @@ class Graph extends Component {
         /* The minimum weight to which have a link between an user and a genre */
         this.default_weight = 4;
 
+        /* Selected users */
         this.selected = [];
     }
 
     addOrRemove(g) {
-        const index = this.selected.indexOf(g.name);
-        if (index < 0) this.selected.push(g.name);
+        const index = this.selected.indexOf(g.id);
+        if (index < 0) this.selected.push(g.id);
         else this.selected.splice(index, 1);
 
-        console.log(this.selected);
+        if (this.selected.length > 0) this.getPlaylist(this.selected);
 
         return index < 0;
     }
