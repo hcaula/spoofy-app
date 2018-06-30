@@ -57,8 +57,13 @@ class Graph extends Component {
         /* Size of the user circle radius */
         const user_radius = 75;
 
+        /* Size of the user info div */
+        const div_height = 100;
+        const div_width = 100;
+
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
+        let current_zoom = initial_zoom;
 
         /* Getting max and min values for everynoise genre positions */
         const ex_top = extent(everynoise1.genres.map(n => n.top));
@@ -165,13 +170,13 @@ class Graph extends Component {
             .append("foreignObject")
             .attr("style", "display: none")
             .attr("id", d => `info_${d.id}`)
-            .attr("class", "div")
-            .attr('height', "100px")
-            .attr('width', "100px")
+            .attr("class", "user_info")
+            .attr('height', "1000px")
+            .attr('width', "1000px")
             .append("xhtml:div")
             .attr("height", "100%")
             .attr("width", "100%")
-            .html(g => GenHTML.genreInfo(g.name, g.id))
+            .html(d => GenHTML.userInfo(d.user))
 
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
@@ -188,12 +193,21 @@ class Graph extends Component {
         /* Zoom simulaton */
         const zoom_svg = zoom()
             .on("zoom", () => {
+                current_zoom = event.transform.k;
+
                 graph.attr('transform', event.transform)
 
                 /* Forces users' nodes to remain a constant size */
                 selectAll('.u_img')
                     .attr('height', () => user_radius / event.transform.k)
                     .attr('width', () => user_radius / event.transform.k)
+
+                /* Forces users' nodes to remain a constant size */
+                selectAll('.user_info')
+                    .attr('height', () => div_height / event.transform.k)
+                    .attr('width', () => div_width / event.transform.k)
+                    .attr('x', d => d.x - (user_radius/2 / event.transform.k))
+                    .attr('y', d => d.y - (user_radius*2 / event.transform.k))
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
@@ -244,9 +258,9 @@ class Graph extends Component {
                 .attr('x', d => d.x)
                 .attr('y', d => d.y);
 
-            selectAll(".div")
-                .attr('x', d => d.x)
-                .attr('y', d => d.y);
+            selectAll(".user_info")
+                .attr('x', d => d.x - (user_radius/2 / current_zoom))
+                .attr('y', d => d.y - (user_radius*2 / current_zoom));
 
             text
                 .attr("x", d => d.x)
@@ -285,7 +299,9 @@ class Graph extends Component {
 
     render() {
         return (
-            <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}></svg>
+            <div>
+                <svg ref={node => this.node = node} width={this.props.width} height={this.props.height}></svg>
+            </div>
         )
     }
 }

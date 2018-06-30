@@ -62,3 +62,7 @@ circle {
 .txt {
     font-size: 30px;
 }
+
+.user_info {
+    border: 3px solid black;
+}

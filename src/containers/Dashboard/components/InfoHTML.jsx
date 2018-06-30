@@ -3,11 +3,11 @@ import ReactDOMServer from 'react-dom/server'
 
 class InfoHTML {
 
-    genreInfo = function(name, id){
+    userInfo = function(user){
         const html = (
-            <div className="genreInfo">
+            <div className="userInfo">
                 <p>Hello!</p>
-                <p>{name}</p>
+                <p>{user.display_name}</p>
             </div>
         )
 

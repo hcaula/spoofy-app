@@ -35,7 +35,8 @@ class GraphHelper {
             id: u._id,
             image: u.image.url,
             type: 'user',
-            name: u.display_name
+            name: u.display_name,
+            user: u
         }));
     }
 
