@@ -58,7 +58,7 @@ class Graph extends Component {
         const user_radius = 75;
 
         /* Size of the user info div */
-        const div_height = 400;
+        const div_height = 200;
         const div_width = 300;
 
         /* Initial scale for zoom */
@@ -123,12 +123,12 @@ class Graph extends Component {
             })
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
-            .on("click", function (g) {
+            .on("click", g => {
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
                     .transition(500)
-                    .call(zoom_svg.scaleTo, initial_zoom)
+                    .call(zoom_svg.scaleTo, initial_zoom);
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -161,12 +161,12 @@ class Graph extends Component {
                 select(`#info_${g.id}`)
                     .style("display", "none");
             })
-            .on("click", function (g) {
+            .on("click", g => {
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
                     .transition(500)
-                    .call(zoom_svg.scaleTo, initial_zoom)
+                    .call(zoom_svg.scaleTo, initial_zoom);
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -220,7 +220,7 @@ class Graph extends Component {
                     .attr('x', d => d.x - (div_width / 2) / current_zoom)
                     .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
                     .style('font-size', () => {
-                        const font_size = 20;
+                        const font_size = 10;
                         return font_size / current_zoom;
                     })
 

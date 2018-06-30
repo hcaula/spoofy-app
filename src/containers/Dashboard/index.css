@@ -63,7 +63,19 @@ circle {
     font-size: 30px;
 }
 
-.user_info {
-    font-size: 20px;
+.userInfo {
     background-color: rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.userPrefs {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px;
 }
