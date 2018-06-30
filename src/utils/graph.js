@@ -14,15 +14,22 @@ class GraphHelper {
     setGenreNodes(users, default_weight) {
         let genreNodes = [];
         users.forEach(u => {
+            let userCount = 0;
             u.genres.forEach(g => {
                 const index = searchByField(g.name, 'name', genreNodes);
-                if (index > -1) genreNodes[index].weight += g.weight;
-                else if (g.weight > default_weight) genreNodes.push({
-                    id: g._id,
-                    name: g.name,
-                    type: 'genre',
-                    weight: g.weight
-                });
+                if (index > -1) {
+                    genreNodes[index].weight += g.weight;
+                    userCount++;
+                }
+                else if (g.weight > default_weight || userCount < 2) {
+                    genreNodes.push({
+                        id: g._id,
+                        name: g.name,
+                        type: 'genre',
+                        weight: g.weight
+                    })
+                    userCount++;
+                };
             });
         });
         genreNodes = genreNodes.sort((a, b) => b.weight - a.weight);
@@ -58,8 +65,9 @@ class GraphHelper {
     setLinks(users, genreNodes, default_weight) {
         const links = [];
         users.forEach(u => {
+            let userCount = 0;
             u.genres.forEach(g => {
-                if (g.weight > default_weight) {
+                if (g.weight > default_weight || userCount < 2) {
                     const index = searchByField(g.name, 'name', genreNodes);
                     const id = (index > -1) ? genreNodes[index].id : g._id;
                     links.push({
@@ -68,6 +76,8 @@ class GraphHelper {
                         weight: g.weight,
                         name: g.name
                     });
+
+                    userCount++;
                 }
             });
         });

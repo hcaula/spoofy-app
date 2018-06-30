@@ -4,8 +4,8 @@ import ReactDOMServer from 'react-dom/server'
 class InfoHTML {
 
     userInfo = function (user) {
-        const artists = user.artists.slice(0,6).map(a => (<p>{a}</p>));
-        const tracks = user.tracks.slice(0,6).map(t => (<p>{t}</p>));
+        const artists = user.artists.slice(0,6).map(a => (<p key={a}>{a}</p>));
+        const tracks = user.tracks.slice(0,6).map(t => (<p key={t}>{t}</p>));
 
         const html = (
             <div className="userInfo">

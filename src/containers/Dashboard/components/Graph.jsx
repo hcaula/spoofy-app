@@ -82,7 +82,7 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => (d.weight ? (1 / d.weight) * 10 : 20)))
+                .distance(d => 50))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
             .force('collision', forceCollide().radius(d => 400));
