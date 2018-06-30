@@ -82,10 +82,10 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => 50))
+                .distance(d => 20))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 400));
+            .force('collision', forceCollide().radius(d => 500));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -189,6 +189,16 @@ class Graph extends Component {
             .attr("width", "100%")
             .html(d => GenHTML.userInfo(d.user))
 
+        // const linkNode = graph.append("g")
+        //     .attr("class", "link-node")
+        //     .selectAll("circle")
+        //     .data(this.linkNodes)
+        //     .enter()
+        //     .append("circle")
+        //     .attr("class", "link-node")
+        //     .attr("r", 20)
+        //     .style("fill", "#ccc")
+
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
             .attr("class", "texts")
@@ -280,6 +290,9 @@ class Graph extends Component {
             text
                 .attr("x", d => d.x)
                 .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
+
+            // linkNode.attr("cx", function (d) { return d.x = (d.source.x + d.target.x) * 0.5; })
+            //     .attr("cy", function (d) { return d.y = (d.source.y + d.target.y) * 0.5; });
         }
 
         /* Given a genre weight, returns its correspondent node size */
