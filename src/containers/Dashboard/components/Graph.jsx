@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { select, selectAll } from 'd3-selection';
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import { drag } from 'd3-drag';
-import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { scaleLinear } from 'd3-scale';
-import { event, extent, mouse } from 'd3';
+import { event, extent } from 'd3';
 
 import everynoise1 from '../../../assets/jsons/everynoise1.json';
 import everynoise2 from '../../../assets/jsons/everynoise2.json';
@@ -173,7 +173,7 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended));
 
-        const divs = graph.append("g")
+        graph.append("g")
             .attr("class", "divs")
             .selectAll("circle")
             .data(this.userNodes)
