@@ -21,7 +21,7 @@ class GraphHelper {
                     genreNodes[index].weight += g.weight;
                     userCount++;
                 }
-                else if (g.weight > default_weight || userCount < 2) {
+                else if (g.weight >= default_weight || userCount < 2) {
                     genreNodes.push({
                         id: g._id,
                         name: g.name,
@@ -67,7 +67,7 @@ class GraphHelper {
         users.forEach(u => {
             let userCount = 0;
             u.genres.forEach(g => {
-                if (g.weight > default_weight || userCount < 2) {
+                if (g.weight >= default_weight || userCount < 2) {
                     const index = searchByField(g.name, 'name', genreNodes);
                     const id = (index > -1) ? genreNodes[index].id : g._id;
                     links.push({
