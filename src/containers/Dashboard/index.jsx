@@ -28,6 +28,11 @@ class Dashboard extends Component {
         else this.setState({ redirect: true });
     }
 
+    async getPlaylist(ids) {
+        const body = await API.getPlaylist(ids);
+        console.log(body);
+    }
+
     render() {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -64,6 +69,7 @@ class Dashboard extends Component {
                             user={user}
                             width={width}
                             height={height}
+                            getPlaylist={this.getPlaylist}
                         />
                     }
                 </div>

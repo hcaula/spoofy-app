@@ -63,6 +63,25 @@ class API {
         }
     }
 
+    async getPlaylist(ids) {
+        const ids_str = ids.join(',');
+        const path = `/api/v2/playlists/seeds/artists?users=${ids_str}`;
+
+        const options = {
+            headers: {
+                'access_token': this.token
+            }
+        };
+
+        const response = await API.request(path, options);
+        if (response.status !== 200) {
+            return null
+        } else {
+            const body = await response.json();
+            return body;
+        }
+    }
+
     async getAllUsers() {
         const options = {
             headers: {
