@@ -80,3 +80,7 @@ circle {
     justify-content: space-between;
     margin: 10px;
 }
+
+.sliderDiv {
+    border: 3px solid white;
+}

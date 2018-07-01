@@ -76,6 +76,9 @@ class Graph extends Component {
         const div_height = 200;
         const div_width = 300;
 
+        const slider_height = 25;
+        const slider_width = user_radius + 15;
+
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
         let current_zoom = initial_zoom;
@@ -161,6 +164,7 @@ class Graph extends Component {
             .attr('class', 'u_img')
             .attr('height', user_radius)
             .attr('width', user_radius)
+            .attr('id', u => `fo_${u.id}`)
             .append('xhtml:img')
             .attr("height", "100%")
             .attr("width", "100%")
@@ -208,6 +212,33 @@ class Graph extends Component {
             .attr("width", "100%")
             .html(d => GenHTML.userInfo(d.user))
 
+        graph.append("g")
+            .attr("class", "sliders")
+            .selectAll("circle")
+            .data(this.userNodes)
+            .enter()
+            .append("foreignObject")
+            .attr("id", d => `slider_${d.id}`)
+            .attr("class", 'sliderDiv')
+            .attr('height', slider_height)
+            .attr('width', slider_width)
+            .append("xhtml:div")
+            .attr("height", "100%")
+            .attr("width", "100%")
+            .attr("class", "sliders_div");
+
+        graph
+            .selectAll('.sliders_div')
+            .append("xhtml:button")
+            .html("YES!")
+            .on('click', () => console.log("YES!"));
+
+        graph
+            .selectAll('.sliders_div')
+            .append("xhtml:button")
+            .html("NO!")
+            .on('click', () => console.log("NO!"));
+
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
         //     .selectAll("circle")
@@ -252,6 +283,12 @@ class Graph extends Component {
                         const font_size = 10;
                         return font_size / current_zoom;
                     })
+
+                selectAll(".sliderDiv")
+                    .attr('height', () => slider_height / event.transform.k)
+                    .attr('width', () => slider_width / event.transform.k)
+                    .attr('x', d => d.x - (slider_width / 2) / current_zoom)
+                    .attr('y', d => d.y + (user_radius / 2) / current_zoom);
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
@@ -305,6 +342,10 @@ class Graph extends Component {
             selectAll(".user_info")
                 .attr('x', d => d.x - (div_width / 2) / current_zoom)
                 .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom);
+
+            selectAll(".sliderDiv")
+                .attr('x', d => d.x - (slider_width / 2) / current_zoom)
+                .attr('y', d => d.y + (user_radius / 2) / current_zoom);
 
             text
                 .attr("x", d => d.x)
