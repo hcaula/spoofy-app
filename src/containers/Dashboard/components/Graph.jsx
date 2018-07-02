@@ -285,7 +285,7 @@ class Graph extends Component {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'up'));
             });
-
+            
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
         //     .selectAll("circle")

@@ -94,3 +94,11 @@ circle {
     justify-content: space-around;
     align-items: center;
 }
+
+.mult_button:hover {
+    cursor: pointer
+}
+
+.genre:hover, .u_img:hover  {
+    cursor: grab
+}
