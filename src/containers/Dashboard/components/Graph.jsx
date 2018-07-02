@@ -95,9 +95,12 @@ class Graph extends Component {
         /* Size of the user info div */
         const div_height = 200;
         const div_width = 300;
+        const div_font_size = 10;
 
         const slider_height = 25;
-        const slider_width = user_radius + 15;
+        const slider_width = user_radius + 50;
+        const mult_btn_width = 30;
+        const mult_val_size = slider_height;
 
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
@@ -257,10 +260,11 @@ class Graph extends Component {
         graph
             .selectAll('.multipliersDiv')
             .append("xhtml:button")
+            .attr("class", "mult_button")
             .html("DOWN!")
             .on('click', u => {
                 select(`#mult_${u.id}`)
-                .html(this.addOrDecMultiplier(u, 'down'));
+                    .html(this.addOrDecMultiplier(u, 'down'));
             });
 
         graph
@@ -276,10 +280,11 @@ class Graph extends Component {
         graph
             .selectAll('.multipliersDiv')
             .append("xhtml:button")
+            .attr("class", "mult_button")
             .html("UP!")
             .on('click', u => {
                 select(`#mult_${u.id}`)
-                .html(this.addOrDecMultiplier(u, 'up'));
+                    .html(this.addOrDecMultiplier(u, 'up'));
             });
 
         // const linkNode = graph.append("g")
@@ -322,16 +327,22 @@ class Graph extends Component {
                     .attr('width', () => div_width / event.transform.k)
                     .attr('x', d => d.x - (div_width / 2) / current_zoom)
                     .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
-                    .style('font-size', () => {
-                        const font_size = 10;
-                        return font_size / current_zoom;
-                    })
+                    .style('font-size', div_font_size / current_zoom);
 
                 selectAll(".sliderDiv")
                     .attr('height', () => slider_height / event.transform.k)
                     .attr('width', () => slider_width / event.transform.k)
                     .attr('x', d => d.x - (slider_width / 2) / current_zoom)
-                    .attr('y', d => d.y + (user_radius / 2) / current_zoom);
+                    .attr('y', d => d.y + (user_radius / 2) / current_zoom)
+                    .style('font-size', mult_val_size / current_zoom);
+
+                selectAll(".mult_button")
+                    .attr('style', () => {
+                        const width = mult_btn_width / current_zoom;
+                        const height = slider_height / current_zoom;
+
+                        return `width:${width}px;height:${height}px`;
+                    });
 
                 /* Translates images after zoom */
                 const val = user_radius / event.transform.k / 2;
