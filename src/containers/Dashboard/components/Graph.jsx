@@ -20,6 +20,7 @@ class Graph extends Component {
     constructor(props) {
         super(props);
 
+        /* getPlaylist function passed from parent */
         this.getPlaylist = this.props.getPlaylist;
 
         /* Logged user */
@@ -34,6 +35,7 @@ class Graph extends Component {
         /* Selected users */
         this.selected = [];
 
+        /* Multipliers parameters */
         this.multiplier_range = [1, 10];
         this.multiplier_med = Math.floor((this.multiplier_range[0] + this.multiplier_range[1]) / 2);
     }
@@ -46,8 +48,10 @@ class Graph extends Component {
         });
         else this.selected.splice(index, 1);
 
+        /* If there's at least one selected user, request playlist */
         if (this.selected.length > 0) this.getPlaylist(this.selected);
 
+        /* This boolean will tell if a user was added or not */
         return index < 0;
     }
 
@@ -57,6 +61,7 @@ class Graph extends Component {
         if (func === 'up' && value < this.multiplier_range[1]) value++;
         if (func === 'down' && value > this.multiplier_range[0]) value--;
 
+        /* If the multiplier value changed, request playlist */
         if (this.selected[index].multiplier !== value) {
             this.selected[index].multiplier = value;
             this.getPlaylist(this.selected);
@@ -79,6 +84,14 @@ class Graph extends Component {
         /* Create the links between the nodes */
         this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
 
+        /* 
+         * Link nodes are extra nodes added for each link.
+         * They help reducing the probability that a node
+         * overlaps a link. However, it causes problems on
+         * collision detection.
+         * We're not using it right now, but I'm leaving it here
+         * in case we decide to.
+        */
         this.linkNodes = GraphHelper.setLinkNodes(this.links, this.nodes);
 
         /* Call familiar D3 function */
@@ -95,11 +108,12 @@ class Graph extends Component {
         /* Size of the user circle radius */
         const user_radius = 75;
 
-        /* Size of the user info div */
+        /* User info div style parameters */
         const div_height = 200;
         const div_width = 300;
         const div_font_size = 10;
 
+        /* Multipleir div style parameters */
         const slider_height = 25;
         const slider_width = user_radius + 50;
         const mult_btn_height = slider_height;
@@ -107,6 +121,9 @@ class Graph extends Component {
 
         /* Initial scale for zoom */
         const initial_zoom = 0.4;
+
+        /* This variable stores the value of the current zoom 
+        for usage outside of the zoom event function */
         let current_zoom = initial_zoom;
 
         /* Getting max and min values for everynoise genre positions */
@@ -136,7 +153,7 @@ class Graph extends Component {
             .nodes(this.nodes)
             .on("tick", ticked);
 
-        /* Forces links */
+        /* Creates links physics */
         simulation.force("link")
             .links(this.links)
 
@@ -156,7 +173,7 @@ class Graph extends Component {
             .data(this.genreNodes)
             .enter()
             .append('circle')
-            .attr('r', g => g.weight ? getRadius(g.weight) : user_radius)
+            .attr('r', g => getRadius(g.weight))
             .attr('fill', g => {
                 if (everynoise2[g.name]) {
                     const red = 125;
@@ -168,6 +185,7 @@ class Graph extends Component {
             .attr("class", 'genre')
             .attr("id", g => `node_${g.id}`)
             .on("click", g => {
+                /* Zooms into the genre node on click */
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
@@ -199,24 +217,32 @@ class Graph extends Component {
             .style('border-radius', '100%')
             .style('border', u => (u.id === this.user._id) ? '5px solid red' : '')
             .on("mouseover", g => {
+                /* Makes user info appear */
                 select(`#info_${g.id}`)
                     .style("display", "");
             })
             .on("mouseout", g => {
+                /* Hides user info */
                 select(`#info_${g.id}`)
                     .style("display", "none");
             })
             .on("click", g => {
+                /* Adds or removes user from selected array */
                 const added = this.addOrRemove(g);
 
+                /* Adds a green border around user */
                 select(`#node_${g.id}`)
                     .style('border', (added ? '20px solid green' : ''));
 
+                /* Displays multiplier div if the user was added.
+                Hide it otherwise */
                 select(`#slider_${g.id}`)
                     .style('display', (added ? '' : 'none'));
 
+                /* Resets multiplier value display if user was deselected */
                 if (added) select(`#mult_${g.id}`).html(this.multiplier_med);
 
+                /* Zooms into user */
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
@@ -228,6 +254,7 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        /* SVG for the user info div */
         graph.append("g")
             .attr("class", "divs")
             .selectAll("circle")
@@ -244,6 +271,7 @@ class Graph extends Component {
             .attr("width", "100%")
             .html(d => GenHTML.userInfo(d.user))
 
+        /* SVG for the multiplier div */
         graph.append("g")
             .attr("class", "sliders")
             .selectAll("circle")
@@ -260,6 +288,7 @@ class Graph extends Component {
             .attr("width", "100%")
             .attr("class", "multipliersDiv");
 
+        /* SVG for multiplier down button */
         graph
             .selectAll('.multipliersDiv')
             .append("xhtml:img")
@@ -270,12 +299,14 @@ class Graph extends Component {
                     .html(this.addOrDecMultiplier(u, 'down'));
             });
 
+        /* SVG for multiplier value display */
         graph
             .selectAll('.multipliersDiv')
             .append("xhtml:div")
             .attr('id', u => `mult_${u.id}`)
             .html(this.multiplier_med);
 
+        /* SVG for multiplier up button */
         graph
             .selectAll('.multipliersDiv')
             .append("xhtml:img")
@@ -285,6 +316,9 @@ class Graph extends Component {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'up'));
             });
+
+        /* Uncomment this snippet if you want to use link nodes.
+        Also, uncomment the link node snippet on 'ticked' function */
 
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
@@ -328,6 +362,7 @@ class Graph extends Component {
                     .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
                     .style('font-size', div_font_size / current_zoom);
 
+                /* Forces fix sizes to multiplier div */
                 selectAll(".sliderDiv")
                     .attr('height', () => slider_height / event.transform.k)
                     .attr('width', () => slider_width / event.transform.k)
@@ -335,6 +370,7 @@ class Graph extends Component {
                     .attr('y', d => d.y + (user_radius / 2) / current_zoom)
                     .style('font-size', mult_val_size / current_zoom);
 
+                /* Forces fix sizes to multiplier buttons */
                 selectAll(".mult_button")
                     .attr('style', () => {
                         const height = mult_btn_height / current_zoom;
@@ -348,18 +384,21 @@ class Graph extends Component {
                     .attr("transform",
                         `translate(-${val},-${val})`);
 
+                /* Add opacity to genre nodes on zoom out */
                 selectAll('.genre')
                     .style('opacity', d => {
                         const ratio = d.weight / 4;
                         return event.transform.k * ratio
                     });
 
+                /* Add opacity to links on zoom out */
                 selectAll('.link')
                     .style('opacity', d => {
                         const ratio = d.weight / 4;
                         return event.transform.k * ratio
                     });
 
+                /* Add opacity to genre texts on zoom out */
                 selectAll('.txt')
                     .style('opacity', d => {
                         const ratio = d.weight / 2;
@@ -409,6 +448,7 @@ class Graph extends Component {
                 .attr("x", d => d.x)
                 .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
 
+            /* Uncomment this snippet if you want link nodes */
             // linkNode.attr("cx", function (d) { return d.x = (d.source.x + d.target.x) * 0.5; })
             //     .attr("cy", function (d) { return d.y = (d.source.y + d.target.y) * 0.5; });
         }
@@ -424,6 +464,8 @@ class Graph extends Component {
             else return mult;
         }
 
+        /* Drag functions */
+        
         function dragstarted(d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
