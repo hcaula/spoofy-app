@@ -372,7 +372,10 @@ class Graph extends Component {
             .call(zoom_svg.transform,
                 zoomIdentity
                     .translate(width * initial_zoom, height * initial_zoom)
-                    .scale(initial_zoom));
+                    .scale(initial_zoom))
+        
+        /* Disables double click zoom */
+        svg.on('dblclick.zoom', null);
 
         /* Function that happens every subsecond */
         function ticked() {
