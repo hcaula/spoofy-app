@@ -63,9 +63,10 @@ class API {
         }
     }
 
-    async getPlaylist(ids) {
+    async getPlaylist(ids, multipliers) {
         const ids_str = ids.join(',');
-        const path = `/api/v2/playlists/seeds/artists?users=${ids_str}`;
+        const mult_str = multipliers.join(',');
+        const path = `/api/v2/playlists/seeds/artists?users=${ids_str}&multipliers=${mult_str}`;
 
         const options = {
             headers: {

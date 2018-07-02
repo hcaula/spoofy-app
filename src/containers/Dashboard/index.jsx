@@ -27,8 +27,10 @@ class Dashboard extends Component {
         else this.setState({ redirect: true });
     }
 
-    async getPlaylist(ids) {
-        const body = await API.getPlaylist(ids);
+    async getPlaylist(selected) {
+        const ids = selected.map(s => s.id);
+        const multipliers = selected.map(s => s.multiplier);
+        const body = await API.getPlaylist(ids, multipliers);
         console.log(body);
     }
 

@@ -33,8 +33,11 @@ class Graph extends Component {
     }
 
     addOrRemove(g) {
-        const index = this.selected.indexOf(g.id);
-        if (index < 0) this.selected.push(g.id);
+        const index = GraphHelper.searchByField(g.id, 'id', this.selected);
+        if (index < 0) this.selected.push({
+            id: g.id,
+            multiplier: 0.5
+        });
         else this.selected.splice(index, 1);
 
         if (this.selected.length > 0) this.getPlaylist(this.selected);
