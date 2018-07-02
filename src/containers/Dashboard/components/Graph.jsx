@@ -146,7 +146,7 @@ class Graph extends Component {
             .selectAll("line")
             .data(this.links)
             .enter().append("line")
-            .attr("stroke-width", d => Math.sqrt(d.weight))
+            .attr("stroke-width", d => d.weight * 2)
             .attr("class", "link")
 
         /* Creates genre nodes SVG circle */
@@ -285,7 +285,7 @@ class Graph extends Component {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'up'));
             });
-            
+
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
         //     .selectAll("circle")
@@ -355,11 +355,14 @@ class Graph extends Component {
                     });
 
                 selectAll('.link')
-                    .style('opacity', event.transform.k);
+                    .style('opacity', d => {
+                        const ratio = d.weight / 4;
+                        return event.transform.k * ratio
+                    });
 
                 selectAll('.txt')
                     .style('opacity', d => {
-                        const ratio = d.weight / 4;
+                        const ratio = d.weight / 2;
                         return event.transform.k * ratio
                     });
             });
