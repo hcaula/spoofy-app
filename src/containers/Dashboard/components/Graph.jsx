@@ -26,7 +26,7 @@ class Graph extends Component {
         this.users = this.props.users;
 
         /* The minimum weight to which have a link between an user and a genre */
-        this.default_weight = 4;
+        this.default_weight = this.props.defaultLinkWeight;
 
         /* Selected users */
         this.selected = [];
@@ -42,10 +42,16 @@ class Graph extends Component {
         return index < 0;
     }
 
-    componentDidMount() {
+    componentDidMount() {       
+        this.setNodesAndLinks(this.default_weight)
 
+        /* Call familiar D3 function */
+        this.drawGraph();
+    }
+
+    setNodesAndLinks = (weight) => {
         /* Preparing the genre nodes based on the users' genres */
-        this.genreNodes = GraphHelper.setGenreNodes(this.users, this.default_weight);
+        this.genreNodes = GraphHelper.setGenreNodes(this.users, weight);
 
         /* Preparing the user nodes */
         this.userNodes = GraphHelper.setUserNodes(this.users);
@@ -54,17 +60,17 @@ class Graph extends Component {
         this.nodes = this.genreNodes.concat(this.userNodes)
 
         /* Create the links between the nodes */
-        this.links = GraphHelper.setLinks(this.users, this.genreNodes, this.default_weight);
+        this.links = GraphHelper.setLinks(this.users, this.genreNodes, weight);
 
         this.linkNodes = GraphHelper.setLinkNodes(this.links, this.nodes);
-
-        /* Call familiar D3 function */
-        this.drawGraph();
     }
 
     drawGraph() {
         const users_length = this.users.length;
         const svg = select('svg');
+        // clean before update
+        svg.selectAll("*").remove();
+        
         const width = +svg.attr("width");
         const height = +svg.attr("height");
         const graph = svg.append('g');

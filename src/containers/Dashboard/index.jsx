@@ -5,14 +5,16 @@ import Graph from './components/Graph';
 import { API } from '../../utils';
 import './index.css';
 import sample from '../../assets/imgs/sample.png';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 class Dashboard extends Component {
 
-    
     state = {
         visible: false,
         ready: false,
-        users: []
+        users: [],
+        defaultLinkWeight: 4
     }
 
     componentDidMount() {
@@ -30,6 +32,15 @@ class Dashboard extends Component {
     async getPlaylist(ids) {
         const body = await API.getPlaylist(ids);
         console.log(body);
+    }
+
+    handleSliderChange = (e) => {
+        this.setState({
+            defaultLinkWeight: e
+        })
+
+        this.refs.graph.drawGraph();
+        this.refs.graph.setNodesAndLinks(e);
     }
 
     render() {
@@ -51,6 +62,16 @@ class Dashboard extends Component {
                         <p>to <b>zoom</b>, use scroll</p>
                         <p>to <b>move</b>, click on a white space and drag</p>
                         <p>you can also drag nodes around</p>
+                        <p>Minimal weight for genre-user affinity: {this.state.defaultLinkWeight}</p>
+                        <div>
+                            <Slider
+                                min={1}
+                                max={10}
+                                defaultValue={this.state.defaultLinkWeight}
+                                step={0.1}
+                                onChange={(e) => this.handleSliderChange(e)}
+                            />
+                        </div>
                     </div>
 
                     <div className="sidebar-toggle">
@@ -64,11 +85,13 @@ class Dashboard extends Component {
                     
                     {!this.state.ready ? null:
                         <Graph
+                            ref='graph'
                             users={this.state.users}
                             user={user}
                             width={width}
                             height={height}
                             getPlaylist={this.getPlaylist}
+                            defaultLinkWeight={this.state.defaultLinkWeight}
                         />
                     }
                 </div>
