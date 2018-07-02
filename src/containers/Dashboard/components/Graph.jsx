@@ -12,6 +12,9 @@ import { GraphHelper } from '../../../utils/';
 
 import GenHTML from './InfoHTML'
 
+import up_arrow from '../../../assets/imgs/up.png';
+import down_arrow from '../../../assets/imgs/down.png';
+
 class Graph extends Component {
 
     constructor(props) {
@@ -99,7 +102,7 @@ class Graph extends Component {
 
         const slider_height = 25;
         const slider_width = user_radius + 50;
-        const mult_btn_width = 30;
+        const mult_btn_height = slider_height;
         const mult_val_size = slider_height;
 
         /* Initial scale for zoom */
@@ -259,9 +262,9 @@ class Graph extends Component {
 
         graph
             .selectAll('.multipliersDiv')
-            .append("xhtml:button")
+            .append("xhtml:img")
+            .attr("src", down_arrow)
             .attr("class", "mult_button")
-            .html("DOWN!")
             .on('click', u => {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'down'));
@@ -269,19 +272,15 @@ class Graph extends Component {
 
         graph
             .selectAll('.multipliersDiv')
-            .append("xhtml:p")
+            .append("xhtml:div")
             .attr('id', u => `mult_${u.id}`)
-            .html(u => {
-                const index = GraphHelper.searchByField(u.id, "id", this.selected);
-                if (index >= 0) return this.selected[index].multiplier;
-                else return 5;
-            });
+            .html(this.multiplier_med);
 
         graph
             .selectAll('.multipliersDiv')
-            .append("xhtml:button")
+            .append("xhtml:img")
+            .attr('src', up_arrow)
             .attr("class", "mult_button")
-            .html("UP!")
             .on('click', u => {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'up'));
@@ -338,10 +337,9 @@ class Graph extends Component {
 
                 selectAll(".mult_button")
                     .attr('style', () => {
-                        const width = mult_btn_width / current_zoom;
-                        const height = slider_height / current_zoom;
+                        const height = mult_btn_height / current_zoom;
 
-                        return `width:${width}px;height:${height}px`;
+                        return `height:${height}px`;
                     });
 
                 /* Translates images after zoom */

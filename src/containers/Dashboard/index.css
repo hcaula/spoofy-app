@@ -82,11 +82,15 @@ circle {
 }
 
 .sliderDiv {
-    border: 3px solid white;
+    display: flex;
+    border-radius: 50px;
+    margin-top: 10px;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .multipliersDiv {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
