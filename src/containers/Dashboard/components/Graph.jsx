@@ -30,13 +30,16 @@ class Graph extends Component {
 
         /* Selected users */
         this.selected = [];
+
+        this.multiplier_range = [1, 10];
+        this.multiplier_med = Math.floor((this.multiplier_range[0] + this.multiplier_range[1]) / 2);
     }
 
     addOrRemove(g) {
         const index = GraphHelper.searchByField(g.id, 'id', this.selected);
         if (index < 0) this.selected.push({
             id: g.id,
-            multiplier: 5
+            multiplier: this.multiplier_med
         });
         else this.selected.splice(index, 1);
 
@@ -48,11 +51,13 @@ class Graph extends Component {
     addOrDecMultiplier(u, func) {
         const index = GraphHelper.searchByField(u.id, "id", this.selected);
         let value = (index >= 0 ? this.selected[index].multiplier : -1);
-        if (func === 'up' && value < 10) value++;
-        if (func === 'down' && value > 1) value--;
-        this.selected[index].multiplier = value;
+        if (func === 'up' && value < this.multiplier_range[1]) value++;
+        if (func === 'down' && value > this.multiplier_range[0]) value--;
 
-        this.getPlaylist(this.selected);
+        if (this.selected[index].multiplier !== value) {
+            this.selected[index].multiplier = value;
+            this.getPlaylist(this.selected);
+        }
 
         return value;
     }
@@ -197,8 +202,14 @@ class Graph extends Component {
             })
             .on("click", g => {
                 const added = this.addOrRemove(g);
+
                 select(`#node_${g.id}`)
                     .style('border', (added ? '20px solid green' : ''));
+
+                select(`#slider_${g.id}`)
+                    .style('display', (added ? '' : 'none'));
+
+                if (added) select(`#mult_${g.id}`).html(this.multiplier_med);
 
                 svg.transition()
                     .duration(500)
@@ -233,6 +244,7 @@ class Graph extends Component {
             .data(this.userNodes)
             .enter()
             .append("foreignObject")
+            .style("display", "none")
             .attr("id", d => `slider_${d.id}`)
             .attr("class", 'sliderDiv')
             .attr('height', slider_height)
