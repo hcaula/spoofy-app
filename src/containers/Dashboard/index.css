@@ -84,3 +84,9 @@ circle {
 .sliderDiv {
     border: 3px solid white;
 }
+
+.multipliersDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}

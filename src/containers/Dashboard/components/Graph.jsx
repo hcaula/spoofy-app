@@ -36,13 +36,25 @@ class Graph extends Component {
         const index = GraphHelper.searchByField(g.id, 'id', this.selected);
         if (index < 0) this.selected.push({
             id: g.id,
-            multiplier: 0.5
+            multiplier: 5
         });
         else this.selected.splice(index, 1);
 
         if (this.selected.length > 0) this.getPlaylist(this.selected);
 
         return index < 0;
+    }
+
+    addOrDecMultiplier(u, func) {
+        const index = GraphHelper.searchByField(u.id, "id", this.selected);
+        let value = (index >= 0 ? this.selected[index].multiplier : -1);
+        if (func === 'up' && value < 10) value++;
+        if (func === 'down' && value > 1) value--;
+        this.selected[index].multiplier = value;
+
+        this.getPlaylist(this.selected);
+
+        return value;
     }
 
     componentDidMount() {
@@ -228,19 +240,35 @@ class Graph extends Component {
             .append("xhtml:div")
             .attr("height", "100%")
             .attr("width", "100%")
-            .attr("class", "sliders_div");
+            .attr("class", "multipliersDiv");
 
         graph
-            .selectAll('.sliders_div')
+            .selectAll('.multipliersDiv')
             .append("xhtml:button")
-            .html("YES!")
-            .on('click', () => console.log("YES!"));
+            .html("DOWN!")
+            .on('click', u => {
+                select(`#mult_${u.id}`)
+                .html(this.addOrDecMultiplier(u, 'down'));
+            });
 
         graph
-            .selectAll('.sliders_div')
+            .selectAll('.multipliersDiv')
+            .append("xhtml:p")
+            .attr('id', u => `mult_${u.id}`)
+            .html(u => {
+                const index = GraphHelper.searchByField(u.id, "id", this.selected);
+                if (index >= 0) return this.selected[index].multiplier;
+                else return 5;
+            });
+
+        graph
+            .selectAll('.multipliersDiv')
             .append("xhtml:button")
-            .html("NO!")
-            .on('click', () => console.log("NO!"));
+            .html("UP!")
+            .on('click', u => {
+                select(`#mult_${u.id}`)
+                .html(this.addOrDecMultiplier(u, 'up'));
+            });
 
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
