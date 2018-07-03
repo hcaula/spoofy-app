@@ -223,7 +223,12 @@ class Graph extends Component {
             .attr('src', u => u.image)
             .attr("id", g => `node_${g.id}`)
             .style('border-radius', '100%')
-            .style('border', u => (u.id === this.user._id) ? '5px solid red' : '')
+            .style('border', u => {
+                const index = GraphHelper.searchByField(u.id, "id", this.selected);
+                const elem = this.selected[index];
+                if (elem) return '20px solid green';
+                else if (u.id === this.user._id) return '5px solid red';
+            })
             .on("mouseover", g => {
                 /* Makes user info appear */
                 select(`#info_${g.id}`)
@@ -286,7 +291,10 @@ class Graph extends Component {
             .data(this.userNodes)
             .enter()
             .append("foreignObject")
-            .style("display", "none")
+            .style("display", u => {
+                const index = GraphHelper.searchByField(u.id, "id", this.selected);
+                if (index < 0) return 'none';
+            })
             .attr("id", d => `slider_${d.id}`)
             .attr("class", 'sliderDiv')
             .attr('height', slider_height)
@@ -312,7 +320,12 @@ class Graph extends Component {
             .selectAll('.multipliersDiv')
             .append("xhtml:div")
             .attr('id', u => `mult_${u.id}`)
-            .html(this.multiplier_med);
+            .html(u => {
+                const index = GraphHelper.searchByField(u.id, "id", this.selected);
+                const elem = this.selected[index];
+                if (elem) return elem.multiplier;
+                else return this.multiplier_med;
+            });
 
         /* SVG for multiplier up button */
         graph
