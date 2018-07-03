@@ -14,7 +14,7 @@ class Dashboard extends Component {
         visible: false,
         ready: false,
         users: [],
-        defaultLinkWeight: 4
+        defaultLinkWeight: 5
     }
 
     componentDidMount() {
@@ -70,7 +70,7 @@ class Dashboard extends Component {
                                 min={1}
                                 max={10}
                                 defaultValue={this.state.defaultLinkWeight}
-                                step={0.1}
+                                step={1}
                                 onChange={(e) => this.handleSliderChange(e)}
                             />
                         </div>

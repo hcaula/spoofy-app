@@ -203,6 +203,8 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended))
 
+                //Compile
+
         /* Creates user nodes SVG images */
         const u_node = graph.append("g")
             .attr("class", "u_nodes")
