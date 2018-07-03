@@ -36,6 +36,8 @@ class Dashboard extends Component {
     componentDidMount() {
         this.loadData();
     }
+
+    logout = () => {this.setState({ redirect: true });}
     
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
@@ -100,10 +102,8 @@ class Dashboard extends Component {
                 <div className="Dashboard">
                     <div className="DashboardTitle">
                         <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
-                        <p>to <b>zoom</b>, use scroll</p>
-                        <p>to <b>move</b>, click on a white space and drag</p>
-                        <p>you can also drag nodes around</p>
-                        <p>Minimal weight for genre-user affinity: {this.state.defaultLinkWeight}</p>
+                        <h3 onClick={this.logout} className="logoutButton">logout</h3>
+                        <p>genre-user affinity: <b>{this.state.defaultLinkWeight}</b></p>
                         <div>
                             <Slider
                                 min={1}
