@@ -45,6 +45,10 @@ svg {
     z-index: 901;
 }
 
+.loadingPlaylist, .emptyPlaylist {
+    margin-top: 20px;
+}
+
 .playlist {
     color: white;
     overflow: hidden;

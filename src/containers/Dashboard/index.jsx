@@ -10,7 +10,7 @@ import 'rc-slider/assets/index.css';
 
 const getSpotifyIframe = (uri) => {
     return (
-        <iframe 
+        <iframe
             title='spotify-iframe'
             src={`https://open.spotify.com/embed?uri=${uri}`}
             width={80}
@@ -27,6 +27,7 @@ class Dashboard extends Component {
     state = {
         visible: false,
         ready: false,
+        playlistReady: true,
         users: [],
         playlist: [],
         spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79'),
@@ -37,8 +38,8 @@ class Dashboard extends Component {
         this.loadData();
     }
 
-    logout = () => {this.setState({ redirect: true });}
-    
+    logout = () => { this.setState({ redirect: true }); }
+
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
     loadData = async () => {
@@ -49,10 +50,15 @@ class Dashboard extends Component {
 
     getPlaylist = async (selected) => {
         try {
+            this.setState({ playlistReady: false });
+
+            /* Automatically toggles playlist sidebar */
+            if (!this.state.visible && selected.length == 1) this.toggleVisibility();
+
             const ids = selected.map(s => s.id);
             const multipliers = selected.map(s => s.multiplier);
             const body = await API.getPlaylist(ids, multipliers);
-            
+
             /* Empties the playlist state so that React
             knows that it changed and re-render component */
             this.setState({
@@ -63,8 +69,7 @@ class Dashboard extends Component {
                 playlist: body.playlist
             });
 
-            /* Automatically toggles playlist sidebar */
-            if (!this.state.visible) this.toggleVisibility();
+            this.setState({ playlistReady: true });
 
         } catch (err) {
             this.state.redirect = true;
@@ -94,7 +99,32 @@ class Dashboard extends Component {
 
         const user = API.getUser();
 
-        if (!user || this.state.redirect) return <Redirect to="/login"/>
+        if (!user || this.state.redirect) return <Redirect to="/login" />
+
+        let playlistDiv;
+        if (!this.state.playlistReady) {
+            playlistDiv = (
+                <div className="loadingPlaylist">
+                    <Icon name='sync' />
+                    <p>loading playlist...</p>
+                </div>
+            )
+        } else if (this.state.playlist.length == 0) {
+            playlistDiv = (
+                <div className="emptyPlaylist">
+                    <h1>playlist is empty</h1>
+                    <h4>please, select users so that we can generate a playlist for you</h4>
+                </div>
+            )
+        } else {
+            playlistDiv = (
+                <div className='songs' style={{ height: height - 80 }}>
+                    {this.state.playlist.map((s, i) =>
+                        <SongRow key={i} song={s} onClick={this.handleSongSelect} />
+                    )}
+                </div>
+            )
+        }
 
         return (
             <Sidebar.Pushable>
@@ -117,14 +147,14 @@ class Dashboard extends Component {
 
                     <div className="sidebar-toggle">
                         <Button onClick={this.toggleVisibility} icon>
-                            {visible ? 
-                                <Icon name='angle right'/>:
-                                <Icon name='angle left'/>
+                            {visible ?
+                                <Icon name='angle right' /> :
+                                <Icon name='angle left' />
                             }
                         </Button>
                     </div>
-                    
-                    {!this.state.ready ? null:
+
+                    {!this.state.ready ? null :
                         <Graph
                             ref='graph'
                             users={this.state.users}
@@ -152,11 +182,7 @@ class Dashboard extends Component {
                         <div className='play'>
                             {this.state.spotifyIframe}
                         </div>
-                        <div className='songs' style={{height: height - 80}}>
-                            {this.state.playlist.map((s, i) =>
-                                <SongRow key={i} song={s} onClick={this.handleSongSelect}/>
-                            )}
-                        </div>
+                        {playlistDiv}
                     </div>
                 </Sidebar>
 
