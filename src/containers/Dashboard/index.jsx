@@ -48,7 +48,7 @@ class Dashboard extends Component {
     getPlaylist = async (selected) => {
         try {
             const ids = selected.map(s => s.id);
-            const multipliers = selected.map(s => s.multipliers);
+            const multipliers = selected.map(s => s.multiplier);
             const body = await API.getPlaylist(ids, multipliers);
             
             /* Empties the playlist state so that React
@@ -60,7 +60,7 @@ class Dashboard extends Component {
             this.setState({
                 playlist: body.playlist
             });
-            
+
         } catch (err) {
             this.state.redirect = true;
         }
