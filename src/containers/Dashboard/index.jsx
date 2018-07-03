@@ -5,6 +5,8 @@ import Graph from './components/Graph';
 import SongRow from './components/SongRow';
 import { API } from '../../utils';
 import './index.css';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 const getSpotifyIframe = (uri) => {
     return (
@@ -27,7 +29,8 @@ class Dashboard extends Component {
         ready: false,
         users: [],
         playlist: [],
-        spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79')
+        spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79'),
+        defaultLinkWeight: 4
     }
 
     componentDidMount() {
@@ -42,9 +45,11 @@ class Dashboard extends Component {
         else this.setState({ redirect: true });
     }
 
-    getPlaylist = async (ids) => {
+    getPlaylist = async (selected) => {
         try {
-            const body = await API.getPlaylist(ids);
+            const ids = selected.map(s => s.id);
+            const multipliers = selected.map(s => s.multipliers);
+            const body = await API.getPlaylist(ids, multipliers);
             this.setState({
                 playlist: body.playlist
             });
@@ -57,6 +62,15 @@ class Dashboard extends Component {
         this.setState({
             spotifyIframe: getSpotifyIframe(song.uri)
         })
+    }
+
+    handleSliderChange = (e) => {
+        this.setState({
+            defaultLinkWeight: e
+        })
+
+        this.refs.graph.drawGraph();
+        this.refs.graph.setNodesAndLinks(e);
     }
 
     render() {
@@ -78,6 +92,16 @@ class Dashboard extends Component {
                         <p>to <b>zoom</b>, use scroll</p>
                         <p>to <b>move</b>, click on a white space and drag</p>
                         <p>you can also drag nodes around</p>
+                        <p>Minimal weight for genre-user affinity: {this.state.defaultLinkWeight}</p>
+                        <div>
+                            <Slider
+                                min={1}
+                                max={10}
+                                defaultValue={this.state.defaultLinkWeight}
+                                step={0.1}
+                                onChange={(e) => this.handleSliderChange(e)}
+                            />
+                        </div>
                     </div>
 
                     <div className="sidebar-toggle">
@@ -91,11 +115,13 @@ class Dashboard extends Component {
                     
                     {!this.state.ready ? null:
                         <Graph
+                            ref='graph'
                             users={this.state.users}
                             user={user}
                             width={width}
                             height={height}
                             getPlaylist={this.getPlaylist}
+                            defaultLinkWeight={this.state.defaultLinkWeight}
                         />
                     }
                 </div>
