@@ -40,11 +40,9 @@ svg {
 }
 
 #sidebar {
-    z-index: 901;
-}
-
-#sidebar {
+    background-color: rgba(27, 28, 29, 0.9);
     overflow: hidden;
+    z-index: 901;
 }
 
 .playlist {
