@@ -255,12 +255,10 @@ class Graph extends Component {
                 /* Resets multiplier value display if user was deselected */
                 if (added) select(`#mult_${g.id}`).html(this.multiplier_med);
 
-                /* Zooms into user */
+                /* Moves camera to centralize user */
                 svg.transition()
                     .duration(500)
                     .call(zoom_svg.translateTo, g.x, g.y)
-                    .transition(500)
-                    .call(zoom_svg.scaleTo, initial_zoom);
             })
             .call(drag()
                 .on("start", dragstarted)
