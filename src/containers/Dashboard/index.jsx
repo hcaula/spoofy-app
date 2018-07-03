@@ -115,8 +115,8 @@ class Dashboard extends Component {
                     <div className="sidebar-toggle">
                         <Button onClick={this.toggleVisibility} icon>
                             {visible ? 
-                                <Icon name='times'/>:
-                                <Icon name='music'/>
+                                <Icon name='angle right'/>:
+                                <Icon name='angle left'/>
                             }
                         </Button>
                     </div>
