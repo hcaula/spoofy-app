@@ -358,7 +358,7 @@ class Graph extends Component {
             .data(this.genreNodes)
             .enter()
             .append("text")
-            .attr('class', 'txt')
+            .attr('class', 'genre_name')
             .attr('id', d => `txt_${d.id}`)
             .text(d => d.name)
             .attr("text-anchor", "middle")
@@ -409,21 +409,21 @@ class Graph extends Component {
                 /* Add opacity to genre nodes on zoom out */
                 selectAll('.genre')
                     .style('opacity', d => {
-                        const ratio = d.weight / 4;
+                        const ratio = d.weight / 6;
                         return event.transform.k * ratio
                     });
 
                 /* Add opacity to links on zoom out */
                 selectAll('.link')
                     .style('opacity', d => {
-                        const ratio = d.weight / 4;
+                        const ratio = d.weight / 6;
                         return event.transform.k * ratio
                     });
 
                 /* Add opacity to genre texts on zoom out */
-                selectAll('.txt')
+                selectAll('.genre_name')
                     .style('opacity', d => {
-                        const ratio = d.weight / 2;
+                        const ratio = d.weight / 6;
                         return event.transform.k * ratio
                     });
             });
@@ -477,7 +477,7 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = users_length * 10;
+            const max = users_length * 15;
             const min = 40;
             const mult = weight * 10;
 

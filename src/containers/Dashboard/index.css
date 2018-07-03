@@ -101,8 +101,8 @@ circle {
     overflow: hidden;
 }
 
-.txt {
-    font-size: 30px;
+.genre_name {
+    font-size: 50px;
 }
 
 .userInfo {
@@ -115,11 +115,17 @@ circle {
     border-radius: 50px;
 }
 
+.userName {
+    border-bottom: 1px solid white;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .userPrefs {
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 10px;
 }
 
@@ -137,10 +143,18 @@ circle {
     align-items: center;
 }
 
+svg:hover {
+    cursor: move;
+}
+
 .mult_button:hover {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .genre:hover, .u_img:hover  {
-    cursor: grab
+    cursor: grab;
+}
+
+.genre:active, .u_img:active  {
+    cursor: grabbing;
 }
