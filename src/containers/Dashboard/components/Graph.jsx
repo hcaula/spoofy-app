@@ -102,8 +102,6 @@ class Graph extends Component {
     }
 
     drawGraph() {
-        if (this.current_zoom) console.log(this.current_zoom);
-
         const users_length = this.users.length;
         const svg = select('svg');
 

@@ -24,7 +24,10 @@
 
     background-color: rgba(255,255,255,0.8);
     color: rgb(25,20,20, 1);
+}
 
+.DashboardTitle > h3 {
+    margin: 5px;
 }
 
 svg {
@@ -61,7 +64,7 @@ svg {
     border-bottom: solid black 1px;
 }
 
-.logoutButton:hover {
+.DashboardOption:hover {
     cursor: pointer;
     text-decoration: underline;
 }

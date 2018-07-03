@@ -91,6 +91,11 @@ class Dashboard extends Component {
         this.refs.graph.setNodesAndLinks(e);
     }
 
+    clearUsers = () => {
+        this.refs.graph.selected = [];
+        this.refs.graph.drawGraph();
+    }
+
     render() {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -132,8 +137,9 @@ class Dashboard extends Component {
                 <div className="Dashboard">
                     <div className="DashboardTitle">
                         <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
-                        <h3 onClick={this.logout} className="logoutButton">logout</h3>
-                        <p>genre-user affinity: <b>{this.state.defaultLinkWeight}</b></p>
+                        <h3 onClick={this.logout} className="DashboardOption">logout</h3>
+                        <h3 onClick={this.clearUsers} className="DashboardOption">clear selected users</h3>
+                        <p>minimum genre-user affinity: <b>{this.state.defaultLinkWeight}</b></p>
                         <div>
                             <Slider
                                 min={1}
