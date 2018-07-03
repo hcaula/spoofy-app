@@ -105,6 +105,7 @@ class Dashboard extends Component {
     render() {
         const width = window.innerWidth;
         const height = window.innerHeight;
+        const min_width = 785;
 
         const { visible } = this.state;
 
@@ -137,14 +138,20 @@ class Dashboard extends Component {
             )
         }
 
+        const dashboardOptions = (
+            <div>
+                <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
+                <h3 onClick={this.logout} className="DashboardOption">logout</h3>
+                <h3 onClick={this.clearUsers} className="DashboardOption">clear selected users</h3>
+            </div>
+        )
+
         return (
             <Sidebar.Pushable>
 
                 <div className="Dashboard">
                     <div className="DashboardTitle">
-                        <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
-                        <h3 onClick={this.logout} className="DashboardOption">logout</h3>
-                        <h3 onClick={this.clearUsers} className="DashboardOption">clear selected users</h3>
+                        {width > min_width ? dashboardOptions : ''}
                         <p>minimum genre-user affinity: <b>{this.state.defaultLinkWeight}</b></p>
                         <div>
                             <Slider
