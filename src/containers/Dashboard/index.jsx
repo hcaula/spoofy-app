@@ -50,11 +50,19 @@ class Dashboard extends Component {
             const ids = selected.map(s => s.id);
             const multipliers = selected.map(s => s.multipliers);
             const body = await API.getPlaylist(ids, multipliers);
+            
+            /* Empties the playlist state so that React
+            knows that it changed and re-render component */
+            this.setState({
+                playlist: []
+            });
+
             this.setState({
                 playlist: body.playlist
             });
+            
         } catch (err) {
-            console.log(err);
+            this.state.redirect = true;
         }
     }
 
