@@ -11,6 +11,7 @@ export default class SongRow extends Component {
     constructor(props) {
         super(props);
         this.song = this.props.song;
+        this.width = this.props.width;
     }
 
     editRating = (flag, rating) => {
@@ -25,30 +26,34 @@ export default class SongRow extends Component {
     render() {
         const { name, artist } = this.song;
         let stars = [];
-        for (let i=0;i<5;i++) 
+        for (let i = 0; i < 5; i++)
             stars.push(
                 <Icon
                     key={i}
-                    name={`star${i >= this.state.tempRating ? ' outline':''}`}
-                    onMouseOver={() => this.editRating(false, i+1)}
-                    onClick={() => this.editRating(true, i+1)}
-                    style={{cursor: 'pointer'}}
+                    name={`star${i >= this.state.tempRating ? ' outline' : ''}`}
+                    onMouseOver={() => this.editRating(false, i + 1)}
+                    onClick={() => this.editRating(true, i + 1)}
+                    style={{ cursor: 'pointer' }}
                 />
             );
+
+        const ori_sb_wth = 475;
+        const width = this.props.width;
+        const ratio = Math.ceil(width/ori_sb_wth);
 
         return (
             <div className='song-row'>
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column width={1} onClick={() => this.props.onClick(this.props.song)} style={{cursor: 'pointer', marginTop: 8}}>
-                            <Icon name='sound'/>
+                        <Grid.Column width={ratio * 1} onClick={() => this.props.onClick(this.props.song)} style={{ cursor: 'pointer', marginTop: 8 }}>
+                            <Icon name='sound' />
                         </Grid.Column>
-                        <Grid.Column width={10} align='left' onClick={() => this.props.onClick(this.props.song)} style={{cursor: 'pointer'}}>
+                        <Grid.Column width={ratio * 9} align='left' onClick={() => this.props.onClick(this.props.song)} style={{ cursor: 'pointer' }}>
                             <span className='name'>{name}</span>
-                            <br/>
+                            <br />
                             <span className='artist'>{artist}</span>
                         </Grid.Column>
-                        <Grid.Column width={5} style={{marginTop: 8}}>
+                        <Grid.Column width={ratio * 5} style={{ marginTop: 8 }}>
                             <div className='rating' onMouseLeave={() => this.editRating(false, this.state.rating)}>
                                 {stars}
                             </div>

@@ -106,6 +106,8 @@ class Dashboard extends Component {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const min_width = 785;
+        const max_sidebar_width = 475;
+        const sidebar_width = (Math.min(width, max_sidebar_width));
 
         const { visible } = this.state;
 
@@ -132,7 +134,7 @@ class Dashboard extends Component {
             playlistDiv = (
                 <div className='songs' style={{ height: height - 80 }}>
                     {this.state.playlist.map((s, i) =>
-                        <SongRow key={i} song={s} onClick={this.handleSongSelect} />
+                        <SongRow width={sidebar_width} key={i} song={s} onClick={this.handleSongSelect} />
                     )}
                 </div>
             )
@@ -189,13 +191,13 @@ class Dashboard extends Component {
                 <Sidebar
                     as={Menu}
                     animation='overlay'
-                    width='very wide'
                     direction='right'
                     visible={visible}
                     icon='labeled'
                     vertical
                     inverted
                     id="sidebar"
+                    style={{width: sidebar_width}}
                 >
                     <div className='playlist'>
                         <div className='play'>
