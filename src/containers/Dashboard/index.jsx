@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
-import { Sidebar, Button, Image, Menu, Icon } from 'semantic-ui-react';
+import { Sidebar, Button, Menu, Icon } from 'semantic-ui-react';
 import Graph from './components/Graph';
+import SongRow from './components/SongRow';
 import { API } from '../../utils';
 import './index.css';
-import sample from '../../assets/imgs/sample.png';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+
+const getSpotifyIframe = (uri) => {
+    return (
+        <iframe 
+            title='spotify-iframe'
+            src={`https://open.spotify.com/embed?uri=${uri}`}
+            width={80}
+            height={80}
+            frameBorder={0}
+            allowtransparency="true"
+            allow="encrypted-media"
+        />
+    );
+}
 
 class Dashboard extends Component {
 
     state = {
-        visible: false,
+        visible: true,
         ready: false,
         users: [],
+        playlist: [],
+        spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79'),
         defaultLinkWeight: 5
     }
 
@@ -23,17 +39,29 @@ class Dashboard extends Component {
     
     toggleVisibility = () => this.setState({ visible: !this.state.visible })
 
-    async loadData() {
+    loadData = async () => {
         const users = await API.getAllUsers();
         if (users) this.setState({ ready: true, users });
         else this.setState({ redirect: true });
     }
 
-    async getPlaylist(selected) {
-        const ids = selected.map(s => s.id);
-        const multipliers = selected.map(s => s.multiplier);
-        const body = await API.getPlaylist(ids, multipliers);
-        console.log(body);
+    getPlaylist = async (selected) => {
+        try {
+            const ids = selected.map(s => s.id);
+            const multipliers = selected.map(s => s.multipliers);
+            const body = await API.getPlaylist(ids, multipliers);
+            this.setState({
+                playlist: body.playlist
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    handleSongSelect = (song) => {
+        this.setState({
+            spotifyIframe: getSpotifyIframe(song.uri)
+        })
     }
 
     handleSliderChange = (e) => {
@@ -60,7 +88,7 @@ class Dashboard extends Component {
 
                 <div className="Dashboard">
                     <div className="DashboardTitle">
-                        <h1>{`thank you for joining, ${user.display_name}`}</h1>
+                        <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
                         <p>to <b>zoom</b>, use scroll</p>
                         <p>to <b>move</b>, click on a white space and drag</p>
                         <p>you can also drag nodes around</p>
@@ -110,7 +138,14 @@ class Dashboard extends Component {
                     id="sidebar"
                 >
                     <div className='playlist'>
-                        <Image src={sample} size='small' circular centered/>
+                        <div className='play'>
+                            {this.state.spotifyIframe}
+                        </div>
+                        <div className='songs' style={{height: height - 80}}>
+                            {this.state.playlist.map((s, i) =>
+                                <SongRow key={i} song={s} onClick={this.handleSongSelect}/>
+                            )}
+                        </div>
                     </div>
                 </Sidebar>
 
