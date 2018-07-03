@@ -16,15 +16,18 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 30%;
-    min-width: 300px;
+    width: 30vw;
+    min-width: 20vw;
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
 
-    background-color: white;
+    background-color: rgba(255,255,255,0.8);
     color: rgb(25,20,20, 1);
+}
 
+.DashboardTitle > h3 {
+    margin: 5px;
 }
 
 svg {
@@ -40,16 +43,55 @@ svg {
 }
 
 #sidebar {
+    background-color: rgba(27, 28, 29, 0.9);
+    overflow: hidden;
     z-index: 901;
 }
 
+.loadingPlaylist, .emptyPlaylist {
+    margin-top: 20px;
+}
+
 .playlist {
-    margin-top: 30px;
+    color: white;
+    overflow: hidden;
+}
+
+.play {
+    position: sticky;
+    top: 0;
+    left: 0;
+    border-bottom: solid black 1px;
+}
+
+.DashboardOption:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.songs {
+    max-width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.playlist .song-row {
+    margin: 20px 10px;
+    color: rgb(194, 194, 194);
+}
+
+.playlist .row:hover {
+    background-color: rgb(75, 75, 75);
+    /* cursor: pointer; */
+}
+
+.playlist .song-row .name {
+    color: white;
 }
 
 .links line {
-    stroke: #999;
-    stroke-opacity: 0.6;
+    stroke: #ffffff;
+    stroke-opacity: 1;
 }
   
 circle {
@@ -59,8 +101,8 @@ circle {
     overflow: hidden;
 }
 
-.txt {
-    font-size: 30px;
+.genre_name {
+    font-size: 50px;
 }
 
 .userInfo {
@@ -73,10 +115,46 @@ circle {
     border-radius: 50px;
 }
 
+.userName {
+    border-bottom: 1px solid white;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .userPrefs {
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     margin: 10px;
+}
+
+.sliderDiv {
+    display: flex;
+    border-radius: 50px;
+    margin-top: 10px;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.multipliersDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+svg:hover {
+    cursor: move;
+}
+
+.mult_button:hover {
+    cursor: pointer;
+}
+
+.genre:hover, .u_img:hover  {
+    cursor: grab;
+}
+
+.genre:active, .u_img:active  {
+    cursor: grabbing;
 }

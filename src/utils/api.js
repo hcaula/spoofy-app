@@ -63,9 +63,10 @@ class API {
         }
     }
 
-    async getPlaylist(ids) {
+    async getPlaylist(ids, multipliers) {
         const ids_str = ids.join(',');
-        const path = `/api/v2/playlists/seeds/artists?users=${ids_str}`;
+        const mult_str = multipliers.join(',');
+        const path = `/api/v2/playlists/seeds/artists?users=${ids_str}&multipliers=${mult_str}`;
 
         const options = {
             headers: {
@@ -75,7 +76,7 @@ class API {
 
         const response = await API.request(path, options);
         if (response.status !== 200) {
-            return null
+            throw response;
         } else {
             const body = await response.json();
             return body;

@@ -2,6 +2,23 @@
     background-color: rgb(25,20,20, 1);
     width: 100vw;
     height: 100vh;
-    padding-top: 15vh;
     color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.innerLoading {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.innerLoading > h1 {
+    font-size: 40px;
+}
+
+.innerLoading > h4 {
+    font-size: 15px;
 }
