@@ -5,7 +5,7 @@ import { API } from '../../utils';
 import './index.css';
 
 export default class Loading extends Component {
-    
+
     state = {
         path: null
     }
@@ -35,17 +35,20 @@ export default class Loading extends Component {
             console.log(error);
         }
     }
-    
+
     render() {
         if (!this.state.path) {
             return (
                 <div className="loading">
-                    Loading data
+                    <div className="innerLoading">
+                        <h1>hey, thanks for joining</h1>
+                        <h4>we're collecting your data from Spotify, hold on...</h4>
+                    </div>
                 </div>
             );
         }
 
-        return <Redirect to={this.state.path}/>;
+        return <Redirect to={this.state.path} />;
     }
-    
+
 }
