@@ -102,9 +102,12 @@ class Graph extends Component {
     }
 
     drawGraph() {
+        if (this.current_zoom) console.log(this.current_zoom);
+
         const users_length = this.users.length;
         const svg = select('svg');
-        // clean before update
+
+        /* Clean before update */
         svg.selectAll("*").remove();
         
         const width = +svg.attr("width");
@@ -126,11 +129,12 @@ class Graph extends Component {
         const mult_val_size = slider_height;
 
         /* Initial scale for zoom */
-        const initial_zoom = 0.4;
+        const initial_zoom = 0.1;
 
         /* This variable stores the value of the current zoom 
         for usage outside of the zoom event function */
-        let current_zoom = initial_zoom;
+        if (!this.current_zoom) this.current_zoom = initial_zoom;
+        let current_zoom = this.current_zoom;
 
         /* Getting max and min values for everynoise genre positions */
         const ex_top = extent(everynoise1.genres.map(n => n.top));
@@ -365,6 +369,7 @@ class Graph extends Component {
         const zoom_svg = zoom()
             .on("zoom", () => {
                 current_zoom = event.transform.k;
+                this.current_zoom = current_zoom;
 
                 graph.attr('transform', event.transform)
 
@@ -429,8 +434,8 @@ class Graph extends Component {
         svg.call(zoom_svg)
             .call(zoom_svg.transform,
                 zoomIdentity
-                    .translate(width * initial_zoom, height * initial_zoom)
-                    .scale(initial_zoom))
+                    .translate(width/2, height/2)
+                    .scale(this.current_zoom))
         
         /* Disables double click zoom */
         svg.on('dblclick.zoom', null);
