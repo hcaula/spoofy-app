@@ -56,9 +56,9 @@ class Graph extends Component {
     }
 
 
-    componentDidMount() {       
+    componentDidMount() {
         this.setNodesAndLinks(this.default_weight)
-        
+
         /* Call familiar D3 function */
         this.drawGraph();
     }
@@ -107,7 +107,7 @@ class Graph extends Component {
 
         /* Clean before update */
         svg.selectAll("*").remove();
-        
+
         const width = +svg.attr("width");
         const height = +svg.attr("height");
         const graph = svg.append('g');
@@ -205,7 +205,7 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended))
 
-                //Compile
+        //Compile
 
         /* Creates user nodes SVG images */
         const u_node = graph.append("g")
@@ -223,7 +223,7 @@ class Graph extends Component {
             .attr("height", "100%")
             .attr("width", "100%")
             .attr('src', u => u.image)
-            .attr("id", g => `node_${g.id}`)
+            .attr("id", u => `node_${u.id}`)
             .style('border-radius', '100%')
             .style('border', u => {
                 const index = GraphHelper.searchByField(u.id, "id", this.selected);
@@ -232,11 +232,19 @@ class Graph extends Component {
                 else if (u.id === this.user._id) return '5px solid red';
             })
             .on("mouseover", g => {
+                select(`#fo_${g.id}`)
+                    .attr('height', () => (user_radius / current_zoom) + 100)
+                    .attr('width', () => (user_radius / current_zoom) + 100)
+
                 /* Makes user info appear */
                 select(`#info_${g.id}`)
                     .style("display", "");
             })
             .on("mouseout", g => {
+                select(`#fo_${g.id}`)
+                    .attr('height', () => (user_radius / current_zoom))
+                    .attr('width', () => (user_radius / current_zoom))
+
                 /* Hides user info */
                 select(`#info_${g.id}`)
                     .style("display", "none");
@@ -432,9 +440,9 @@ class Graph extends Component {
         svg.call(zoom_svg)
             .call(zoom_svg.transform,
                 zoomIdentity
-                    .translate(width/2, height/2)
+                    .translate(width / 2, height / 2)
                     .scale(this.current_zoom))
-        
+
         /* Disables double click zoom */
         svg.on('dblclick.zoom', null);
 
@@ -487,7 +495,7 @@ class Graph extends Component {
         }
 
         /* Drag functions */
-        
+
         function dragstarted(d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;

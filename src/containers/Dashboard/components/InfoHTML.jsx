@@ -22,6 +22,9 @@ class InfoHTML {
                         {tracks}
                     </div>
                 </div>
+                <div className="extraInfo">
+                    <p>click to select user</p>
+                </div>
             </div>
         )
 
