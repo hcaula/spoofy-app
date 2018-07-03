@@ -16,8 +16,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 30%;
-    min-width: 300px;
+    width: 30vw;
+    min-width: 20vw;
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
@@ -43,21 +43,36 @@ svg {
     z-index: 901;
 }
 
-.playlist {
-    margin-top: 30px;
-    color: white;
+#sidebar {
+    overflow-x: hidden;
 }
 
-.playlist .play {
-    position: absolute;
-    bottom: 0;
+.playlist {
+    color: white;
+    overflow: hidden;
+}
+
+.play {
+    position: sticky;
+    top: 0;
     left: 0;
-    text-align: center;
+    border-bottom: solid black 1px;
+}
+
+.songs {
+    width: 475px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .playlist .song-row {
     margin: 20px 10px;
-    color: grey;
+    color: rgb(194, 194, 194);
+}
+
+.playlist .row:hover {
+    background-color: rgb(75, 75, 75);
+    /* cursor: pointer; */
 }
 
 .playlist .song-row .name {

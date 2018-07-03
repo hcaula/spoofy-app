@@ -3,32 +3,54 @@ import { Grid, Icon } from 'semantic-ui-react';
 
 export default class SongRow extends Component {
 
+    state = {
+        rating: 0,
+        tempRating: 0
+    }
+
+    constructor(props) {
+        super(props);
+        this.song = this.props.song;
+    }
+
+    editRating = (flag, rating) => {
+        let st = {};
+        if (flag)
+            st.rating = rating;
+        else
+            st.tempRating = rating;
+        this.setState(st);
+    }
+
     render() {
-        const key = 1;
-        const musicName = 'Plastic Love';
-        const artist = 'Takeuchi Mariya';
-        const duration = '4:28';
-        let stars = [0, 0, 0, 0, 0];
+        const { name, artist } = this.song;
+        let stars = [];
+        for (let i=0;i<5;i++) 
+            stars.push(
+                <Icon
+                    key={i}
+                    name={`star${i >= this.state.tempRating ? ' outline':''}`}
+                    onMouseOver={() => this.editRating(false, i+1)}
+                    onClick={() => this.editRating(true, i+1)}
+                    style={{cursor: 'pointer'}}
+                />
+            );
 
         return (
             <div className='song-row'>
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column width={1}>
-                            <span>{key}</span>
+                        <Grid.Column width={1} onClick={() => this.props.onClick(this.props.song)} style={{cursor: 'pointer', marginTop: 8}}>
+                            <Icon name='sound'/>
                         </Grid.Column>
-                        <Grid.Column width={10} align='left'>
-                            <span className='name'>{musicName}</span>
+                        <Grid.Column width={10} align='left' onClick={() => this.props.onClick(this.props.song)} style={{cursor: 'pointer'}}>
+                            <span className='name'>{name}</span>
                             <br/>
                             <span className='artist'>{artist}</span>
                         </Grid.Column>
-                        <Grid.Column width={5}>
-                            <span className='duration'>{duration}</span>
-                            <br/>
-                            <div className='rating'>
-                                {stars.map(star => 
-                                    <Icon name={`star${star === 0 ? ' outline':''}`}/>
-                                )}
+                        <Grid.Column width={5} style={{marginTop: 8}}>
+                            <div className='rating' onMouseLeave={() => this.editRating(false, this.state.rating)}>
+                                {stars}
                             </div>
                         </Grid.Column>
                     </Grid.Row>
