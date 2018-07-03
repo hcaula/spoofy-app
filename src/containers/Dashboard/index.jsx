@@ -25,7 +25,7 @@ const getSpotifyIframe = (uri) => {
 class Dashboard extends Component {
 
     state = {
-        visible: true,
+        visible: false,
         ready: false,
         users: [],
         playlist: [],
@@ -60,6 +60,9 @@ class Dashboard extends Component {
             this.setState({
                 playlist: body.playlist
             });
+
+            /* Automatically toggles playlist sidebar */
+            if (!this.state.visible) this.toggleVisibility();
 
         } catch (err) {
             this.state.redirect = true;
