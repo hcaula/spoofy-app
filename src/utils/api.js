@@ -76,7 +76,7 @@ class API {
 
         const response = await API.request(path, options);
         if (response.status !== 200) {
-            return null
+            throw response;
         } else {
             const body = await response.json();
             return body;

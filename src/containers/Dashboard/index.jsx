@@ -53,7 +53,7 @@ class Dashboard extends Component {
             this.setState({ playlistReady: false });
 
             /* Automatically toggles playlist sidebar */
-            if (!this.state.visible && selected.length == 1) this.toggleVisibility();
+            if (!this.state.visible && selected.length === 1) this.toggleVisibility();
 
             const ids = selected.map(s => s.id);
             const multipliers = selected.map(s => s.multiplier);
@@ -72,7 +72,13 @@ class Dashboard extends Component {
             this.setState({ playlistReady: true });
 
         } catch (err) {
-            this.state.redirect = true;
+            if (err.status === 401) {
+                alert("Your Spotify token has expired. Please, login again.");
+                this.setState({ redirect: true });
+            } else {
+                console.log(err);
+                alert("Something went wrong. We've messed up. Try again in a moment.");
+            }
         }
     }
 
@@ -114,7 +120,7 @@ class Dashboard extends Component {
                     <p>loading playlist...</p>
                 </div>
             )
-        } else if (this.state.playlist.length == 0) {
+        } else if (this.state.playlist.length === 0) {
             playlistDiv = (
                 <div className="emptyPlaylist">
                     <h1>playlist is empty</h1>
