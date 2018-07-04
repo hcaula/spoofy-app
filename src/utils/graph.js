@@ -34,6 +34,7 @@ class GraphHelper {
                 else if (g.weight >= default_weight || userCount < 2) {
                     genreNodes.push({
                         id: removeDots(g._id),
+                        originalId: g._id,
                         name: g.name,
                         type: 'genre',
                         weight: g.weight
@@ -50,6 +51,7 @@ class GraphHelper {
     setUserNodes(users) {
         return users.map(u => Object({
             id: removeDots(u._id),
+            originalId: u._id,
             image: u.image.url,
             type: 'user',
             name: u.display_name,

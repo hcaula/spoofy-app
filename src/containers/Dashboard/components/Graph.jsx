@@ -41,9 +41,9 @@ class Graph extends Component {
     }
 
     addOrRemove(g) {
-        const index = GraphHelper.searchByField(g.id, 'id', this.selected);
+        const index = GraphHelper.searchByField(g.originalId, 'id', this.selected);
         if (index < 0) this.selected.push({
-            id: g.id,
+            id: g.originalId,
             multiplier: this.multiplier_med
         });
         else this.selected.splice(index, 1);
@@ -62,8 +62,9 @@ class Graph extends Component {
         /* Call familiar D3 function */
         this.drawGraph();
     }
+
     addOrDecMultiplier(u, func) {
-        const index = GraphHelper.searchByField(u.id, "id", this.selected);
+        const index = GraphHelper.searchByField(u.originalId, "id", this.selected);
         let value = (index >= 0 ? this.selected[index].multiplier : -1);
         if (func === 'up' && value < this.multiplier_range[1]) value++;
         if (func === 'down' && value > this.multiplier_range[0]) value--;
