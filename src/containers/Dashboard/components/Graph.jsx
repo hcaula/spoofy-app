@@ -128,7 +128,7 @@ class Graph extends Component {
         const mult_val_size = slider_height;
 
         /* Initial scale for zoom */
-        const initial_zoom = 1;
+        const initial_zoom = 0.5;
 
         /* This variable stores the value of the current zoom 
         for usage outside of the zoom event function */
