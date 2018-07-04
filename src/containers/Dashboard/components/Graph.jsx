@@ -155,7 +155,7 @@ class Graph extends Component {
                 .distance(d => 5))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => this.userNodes.length *2));
+            .force('collision', forceCollide().radius(d => this.userNodes.length * 2));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -172,7 +172,7 @@ class Graph extends Component {
             .selectAll("line")
             .data(this.links)
             .enter().append("line")
-            .attr("stroke-width", d => d.weight*(1/2))
+            .attr("stroke-width", d => d.weight * (1 / 2))
             .attr("class", "link")
 
         /* Creates genre nodes SVG circle */
@@ -232,8 +232,8 @@ class Graph extends Component {
             })
             .on("mouseover", g => {
                 select(`#fo_${g.id}`)
-                    .attr('height', () => (user_radius / current_zoom) + 100)
-                    .attr('width', () => (user_radius / current_zoom) + 100)
+                    .attr('height', () => (user_radius / current_zoom) + 10)
+                    .attr('width', () => (user_radius / current_zoom) + 10)
 
                 /* Makes user info appear */
                 select(`#info_${g.id}`)
@@ -284,8 +284,6 @@ class Graph extends Component {
             .style("display", "none")
             .attr("id", d => `info_${d.id}`)
             .attr("class", "user_info")
-            .attr('height', "1000px")
-            .attr('width', "1000px")
             .append("xhtml:div")
             .attr("height", "100%")
             .attr("width", "100%")
@@ -372,7 +370,7 @@ class Graph extends Component {
             .attr("text-anchor", "middle")
 
         /* Zoom simulaton */
-        const zoom_svg = zoom()
+        const zoom_svg = zoom().scaleExtent([0.1, 1.6])
             .on("zoom", () => {
                 current_zoom = event.transform.k;
                 this.current_zoom = current_zoom;
@@ -386,10 +384,10 @@ class Graph extends Component {
 
                 /* Forces user info div to remain a constant size and always above user image */
                 selectAll('.user_info')
-                    .attr('height', () => div_height / event.transform.k)
-                    .attr('width', () => div_width / event.transform.k)
+                    .attr('height', () => div_height / current_zoom)
+                    .attr('width', () => div_width / current_zoom)
                     .attr('x', d => d.x - (div_width / 2) / current_zoom)
-                    .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom)
+                    .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / current_zoom))
                     .style('font-size', div_font_size / current_zoom);
 
                 /* Forces fix sizes to multiplier div */
@@ -468,7 +466,7 @@ class Graph extends Component {
 
             selectAll(".user_info")
                 .attr('x', d => d.x - (div_width / 2) / current_zoom)
-                .attr('y', d => d.y - (div_height / current_zoom) - (user_radius / 2) / current_zoom);
+                .attr('y', d => (d.y - (div_height / current_zoom) - (user_radius / current_zoom)));
 
             selectAll(".sliderDiv")
                 .attr('x', d => d.x - (slider_width / 2) / current_zoom)
@@ -485,7 +483,7 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const factor = 1/3
+            const factor = 1 / 3
             const max = users_length * 5 * factor;
             const min = 10 * factor;
             const mult = weight * 5 * factor;
