@@ -155,7 +155,7 @@ class Graph extends Component {
                 .distance(d => 5))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => this.userNodes.length * 2));
+            .force('collision', forceCollide().radius(d => this.userNodes.length * 3));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -227,7 +227,7 @@ class Graph extends Component {
             .style('border', u => {
                 const index = GraphHelper.searchByField(u.id, "id", this.selected);
                 const elem = this.selected[index];
-                if (elem) return '20px solid green';
+                if (elem) return '5px solid green';
                 else if (u.id === this.user._id) return '5px solid red';
             })
             .on("mouseover", g => {
@@ -254,7 +254,7 @@ class Graph extends Component {
 
                 /* Adds a green border around user */
                 select(`#node_${g.id}`)
-                    .style('border', (added ? '20px solid green' : ''));
+                    .style('border', (added ? '5px solid green' : ''));
 
                 /* Displays multiplier div if the user was added.
                 Hide it otherwise */
@@ -415,21 +415,21 @@ class Graph extends Component {
                 /* Add opacity to genre nodes on zoom out */
                 selectAll('.genre')
                     .style('opacity', d => {
-                        const ratio = d.weight / 6;
+                        const ratio = d.weight / 20;
                         return event.transform.k * ratio
                     });
 
                 /* Add opacity to links on zoom out */
                 selectAll('.link')
                     .style('opacity', d => {
-                        const ratio = d.weight / 6;
+                        const ratio = d.weight / 20;
                         return event.transform.k * ratio
                     });
 
                 /* Add opacity to genre texts on zoom out */
                 selectAll('.genre_name')
                     .style('opacity', d => {
-                        const ratio = d.weight / 6;
+                        const ratio = d.weight / 20;
                         return event.transform.k * ratio
                     });
             });
