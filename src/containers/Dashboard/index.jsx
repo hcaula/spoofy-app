@@ -4,8 +4,8 @@ import { Sidebar, Button, Menu, Icon } from 'semantic-ui-react';
 import Graph from './components/Graph';
 import SongRow from './components/SongRow';
 import { API } from '../../utils';
-import './index.css';
 import Slider from 'rc-slider';
+import './index.css';
 import 'rc-slider/assets/index.css';
 
 const getSpotifyIframe = (uri) => {
@@ -25,12 +25,12 @@ const getSpotifyIframe = (uri) => {
 class Dashboard extends Component {
 
     state = {
-        visible: false,
+        visible: true,
         ready: false,
         playlistReady: true,
         users: [],
         playlist: [],
-        spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79'),
+        spotifyIframe: <div style={{margin: 10}}><Icon name='spotify' size='huge'/></div>,
         defaultLinkWeight: 8
     }
 
