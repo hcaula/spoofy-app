@@ -128,7 +128,7 @@ class Graph extends Component {
         const mult_val_size = slider_height;
 
         /* Initial scale for zoom */
-        const initial_zoom = 0.1;
+        const initial_zoom = 1;
 
         /* This variable stores the value of the current zoom 
         for usage outside of the zoom event function */
@@ -152,10 +152,10 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => 200))
+                .distance(d => 50))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => this.userNodes.length * 25));
+            .force('collision', forceCollide().radius(d => this.userNodes.length * 5));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -485,9 +485,9 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = users_length * 15;
-            const min = 40;
-            const mult = weight * 10;
+            const max = users_length * 5;
+            const min = 10;
+            const mult = weight * 5;
 
             if (mult < min) return min;
             if (mult > max) return max;
