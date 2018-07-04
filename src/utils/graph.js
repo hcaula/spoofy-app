@@ -1,3 +1,13 @@
+const removeDots = function (str) {
+    let index = str.indexOf('.');
+    while (index >= 0) {
+        str = str.replace('.', '');
+        index = str.indexOf('.');
+    }
+
+    return str;
+}
+
 class GraphHelper {
 
     searchByField = function (value, param, array) {
@@ -10,7 +20,6 @@ class GraphHelper {
         });
         return index;
     }
-    
 
     setGenreNodes(users, default_weight) {
         let genreNodes = [];
@@ -24,7 +33,7 @@ class GraphHelper {
                 }
                 else if (g.weight >= default_weight || userCount < 2) {
                     genreNodes.push({
-                        id: g._id,
+                        id: removeDots(g._id),
                         name: g.name,
                         type: 'genre',
                         weight: g.weight
@@ -40,7 +49,7 @@ class GraphHelper {
 
     setUserNodes(users) {
         return users.map(u => Object({
-            id: u._id,
+            id: removeDots(u._id),
             image: u.image.url,
             type: 'user',
             name: u.display_name,
@@ -72,8 +81,8 @@ class GraphHelper {
                     const index = this.searchByField(g.name, 'name', genreNodes);
                     const id = (index > -1) ? genreNodes[index].id : g._id;
                     links.push({
-                        source: u._id,
-                        target: id,
+                        source: removeDots(u._id),
+                        target: removeDots(id),
                         weight: g.weight,
                         name: g.name
                     });
