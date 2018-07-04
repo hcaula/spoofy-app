@@ -152,10 +152,10 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => 50))
+                .distance(d => 5))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => this.userNodes.length * 5));
+            .force('collision', forceCollide().radius(d => this.userNodes.length *2));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -172,7 +172,7 @@ class Graph extends Component {
             .selectAll("line")
             .data(this.links)
             .enter().append("line")
-            .attr("stroke-width", d => d.weight * 2)
+            .attr("stroke-width", d => d.weight*(1/2))
             .attr("class", "link")
 
         /* Creates genre nodes SVG circle */
@@ -367,7 +367,7 @@ class Graph extends Component {
             .append("text")
             .attr('class', 'genre_name')
             .attr('id', d => `txt_${d.id}`)
-            .style("font-size", "150px")
+            .style("font-size", "15px")
             .text(d => d.name)
             .attr("text-anchor", "middle")
 
@@ -485,9 +485,10 @@ class Graph extends Component {
 
         /* Given a genre weight, returns its correspondent node size */
         function getRadius(weight) {
-            const max = users_length * 5;
-            const min = 10;
-            const mult = weight * 5;
+            const factor = 1/3
+            const max = users_length * 5 * factor;
+            const min = 10 * factor;
+            const mult = weight * 5 * factor;
 
             if (mult < min) return min;
             if (mult > max) return max;
