@@ -31,7 +31,7 @@ class Dashboard extends Component {
         users: [],
         playlist: [],
         spotifyIframe: getSpotifyIframe('spotify:track:4BQOi5mYZozFR4HnOy5F79'),
-        defaultLinkWeight: 5
+        defaultLinkWeight: 8
     }
 
     componentDidMount() {
@@ -157,8 +157,8 @@ class Dashboard extends Component {
                         <p>minimum genre-user affinity: <b>{this.state.defaultLinkWeight}</b></p>
                         <div>
                             <Slider
-                                min={1}
-                                max={10}
+                                min={5}
+                                max={20}
                                 defaultValue={this.state.defaultLinkWeight}
                                 step={1}
                                 onChange={(e) => this.handleSliderChange(e)}

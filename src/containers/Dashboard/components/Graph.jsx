@@ -151,10 +151,10 @@ class Graph extends Component {
         const simulation = forceSimulation()
             .force('link', forceLink().id(d => d.id)
                 .strength(0.8)
-                .distance(d => 20))
+                .distance(d => 200))
             .force('charge', forceManyBody())
             .force('center', forceCenter(width / 2, height / 2))
-            .force('collision', forceCollide().radius(d => 500));
+            .force('collision', forceCollide().radius(d => this.userNodes.length * 25));
 
         /* Calls 'ticked' function every subsecond */
         simulation
@@ -204,8 +204,6 @@ class Graph extends Component {
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended))
-
-        //Compile
 
         /* Creates user nodes SVG images */
         const u_node = graph.append("g")
@@ -368,6 +366,7 @@ class Graph extends Component {
             .append("text")
             .attr('class', 'genre_name')
             .attr('id', d => `txt_${d.id}`)
+            .style("font-size", "150px")
             .text(d => d.name)
             .attr("text-anchor", "middle")
 
