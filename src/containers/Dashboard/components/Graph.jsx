@@ -102,6 +102,22 @@ class Graph extends Component {
         this.linkNodes = GraphHelper.setLinkNodes(this.links, this.nodes);
     }
 
+    focusLoggedUser() {
+        const userId = this.user._id
+        let x = null
+        let y = null
+        selectAll('.u_img').each(d => {
+            if (d.id === userId) {
+                x = d.x
+                y = d.y
+            }
+        })
+        
+        select('svg').transition()
+                .duration(500)
+                .call(this.zoom_svg.translateTo, x, y)
+    }
+
     drawGraph() {
         const users_length = this.users.length;
         const svg = select('svg');
@@ -197,9 +213,9 @@ class Graph extends Component {
                 /* Zooms into the genre node on click */
                 svg.transition()
                     .duration(500)
-                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .call(this.zoom_svg.translateTo, g.x, g.y)
                     .transition(500)
-                    .call(zoom_svg.scaleTo, initial_zoom);
+                    .call(this.zoom_svg.scaleTo, initial_zoom);
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -267,7 +283,7 @@ class Graph extends Component {
                 /* Moves camera to centralize user */
                 svg.transition()
                     .duration(500)
-                    .call(zoom_svg.translateTo, g.x, g.y)
+                    .call(this.zoom_svg.translateTo, g.x, g.y)
             })
             .call(drag()
                 .on("start", dragstarted)
@@ -370,7 +386,7 @@ class Graph extends Component {
             .attr("text-anchor", "middle")
 
         /* Zoom simulaton */
-        const zoom_svg = zoom().scaleExtent([0.1, 1.6])
+        this.zoom_svg = zoom().scaleExtent([0.1, 1.6])
             .on("zoom", () => {
                 current_zoom = event.transform.k;
                 this.current_zoom = current_zoom;
@@ -435,8 +451,8 @@ class Graph extends Component {
             });
 
         /* Calls zoom simulation */
-        svg.call(zoom_svg)
-            .call(zoom_svg.transform,
+        svg.call(this.zoom_svg)
+            .call(this.zoom_svg.transform,
                 zoomIdentity
                     .translate(width / 2, height / 2)
                     .scale(this.current_zoom))

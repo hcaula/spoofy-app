@@ -102,6 +102,10 @@ class Dashboard extends Component {
         this.refs.graph.drawGraph();
     }
 
+    focusLoggedUser = () => {
+        this.refs.graph.focusLoggedUser();
+    }
+    
     render() {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -164,6 +168,12 @@ class Dashboard extends Component {
                                 onChange={(e) => this.handleSliderChange(e)}
                             />
                         </div>
+                    </div>
+
+                    <div className="focus-button">
+                        <Button onClick={this.focusLoggedUser} icon>
+                            User focus
+                        </Button>
                     </div>
 
                     <div className="sidebar-toggle">

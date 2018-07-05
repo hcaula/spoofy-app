@@ -42,6 +42,14 @@ svg {
     z-index: 999;
 }
 
+.focus-button {
+    position: fixed;
+    top: 0;
+    right: 10;
+    margin: 10px;
+    z-index: 999;
+}
+
 #sidebar {
     background-color: rgba(27, 28, 29, 0.9);
     overflow: hidden;
