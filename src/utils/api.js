@@ -139,6 +139,28 @@ class API {
         }
     }
 
+    async exportPlaylist(playlist_id) {
+        const options = {
+            method: 'POST',
+            headers: {
+                'access_token': this.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                playlist_id: playlist_id
+            })
+        }
+
+        try {
+            const response = await API.request('/api/v2/playlists/export', options);
+            if (response.status !== 200) {
+                throw new Error('Request not successfull');
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default new API();

@@ -32,7 +32,9 @@ class Dashboard extends Component {
         users: [],
         playlist: [],
         spotifyIframe: "",
-        defaultLinkWeight: 8
+        defaultLinkWeight: 8,
+        exporting: false,
+        exported: false
     }
 
     componentDidMount() {
@@ -58,9 +60,20 @@ class Dashboard extends Component {
         }
     }
 
+    exportPlaylist = async () => {
+        try {
+            this.setState({exporting: true, exported: false});
+            await API.exportPlaylist(this.state.playlist_id);
+            this.setState({exporting: false, exported: true});
+        } catch (error) {
+            console.log(error);
+            alert("It wasn't possible to export this playlist at this moment.");
+        }
+    }
+
     getPlaylist = async (selected) => {
         try {
-            this.setState({ playlistReady: false });
+            this.setState({ playlistReady: false, exporting: false, exported: false });
 
             /* Automatically toggles playlist sidebar */
             if (!this.state.visible && selected.length === 1) this.toggleVisibility();
@@ -155,6 +168,11 @@ class Dashboard extends Component {
             )
         }
 
+        let exportButton;
+        if (this.state.exporting) exportButton = <Icon name="notched circle loading icon" />;
+        else if (this.state.exported) exportButton = (<div>playlist exported! <Icon name="check" /></div>);
+        else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large'/></div>);
+
         const dashboardOptions = (
             <div>
                 <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
@@ -226,7 +244,7 @@ class Dashboard extends Component {
                         <div className='play'>
                             {(this.state.playlist.length > 0 && !this.state.trackSelected) ? 
                             (   <div className="spotifyArea">
-                                    <Button className="exportButton">export playlist <Icon className="exportIcon" name="spotify" size='large'/></Button>
+                                    <Button onClick={this.exportPlaylist} className="exportButton">{exportButton}</Button>
                                     {this.state.spotifyIframe}
                                 </div>
                             ) :
