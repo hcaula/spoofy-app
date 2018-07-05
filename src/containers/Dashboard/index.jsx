@@ -149,7 +149,6 @@ class Dashboard extends Component {
             <div>
                 <h1>{`hi, ${user.display_name.toLowerCase()}`}</h1>
                 <h3 onClick={this.logout} className="DashboardOption">logout</h3>
-                <h3 onClick={this.clearUsers} className="DashboardOption">clear selected users</h3>
             </div>
         )
 
@@ -172,8 +171,11 @@ class Dashboard extends Component {
                     </div>
 
                     <div className="focus-button">
-                        <Button onClick={this.focusLoggedUser} icon>
+                        <Button className="graph-options" onClick={this.focusLoggedUser} icon>
                             <Icon name="crosshairs" />
+                        </Button>
+                        <Button className="graph-options" onClick={this.clearUsers} icon>
+                            <Icon name="redo alternate" />
                         </Button>
                     </div>
 

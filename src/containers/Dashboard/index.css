@@ -50,6 +50,11 @@ svg {
     z-index: 1;
 }
 
+.graph-options {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
 #sidebar {
     background-color: rgba(27, 28, 29, 0.9);
     overflow: hidden;

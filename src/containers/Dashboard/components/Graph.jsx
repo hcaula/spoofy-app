@@ -292,7 +292,7 @@ class Graph extends Component {
 
         /* Uncomment this snippet if you want to use link nodes.
         Also, uncomment the link node snippet on 'ticked' function */
-
+        
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
         //     .selectAll("circle")
