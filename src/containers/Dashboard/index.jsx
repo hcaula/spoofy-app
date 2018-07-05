@@ -169,7 +169,7 @@ class Dashboard extends Component {
         }
 
         let exportButton;
-        if (this.state.exporting) exportButton = <Icon name="notched circle loading icon" />;
+        if (this.state.exporting) exportButton = (<div><Icon name="notched spotify loading icon" /></div>);
         else if (this.state.exported) exportButton = (<div>playlist exported! <Icon name="check" /></div>);
         else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large'/></div>);
 
