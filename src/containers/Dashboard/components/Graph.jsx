@@ -112,10 +112,10 @@ class Graph extends Component {
                 y = d.y
             }
         })
-        
+
         select('svg').transition()
-                .duration(500)
-                .call(this.zoom_svg.translateTo, x, y)
+            .duration(500)
+            .call(this.zoom_svg.translateTo, x, y)
     }
 
     drawGraph() {
@@ -290,6 +290,19 @@ class Graph extends Component {
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        /* Uncomment this snippet if you want to use link nodes.
+        Also, uncomment the link node snippet on 'ticked' function */
+
+        // const linkNode = graph.append("g")
+        //     .attr("class", "link-node")
+        //     .selectAll("circle")
+        //     .data(this.linkNodes)
+        //     .enter()
+        //     .append("circle")
+        //     .attr("class", "link-node")
+        //     .attr("r", 5)
+        //     .style("fill", "#ccc")
+
         /* SVG for the user info div */
         graph.append("g")
             .attr("class", "divs")
@@ -358,19 +371,6 @@ class Graph extends Component {
                 select(`#mult_${u.id}`)
                     .html(this.addOrDecMultiplier(u, 'up'));
             });
-
-        /* Uncomment this snippet if you want to use link nodes.
-        Also, uncomment the link node snippet on 'ticked' function */
-
-        // const linkNode = graph.append("g")
-        //     .attr("class", "link-node")
-        //     .selectAll("circle")
-        //     .data(this.linkNodes)
-        //     .enter()
-        //     .append("circle")
-        //     .attr("class", "link-node")
-        //     .attr("r", 20)
-        //     .style("fill", "#ccc")
 
         /* Appends texts SVG elements to genre nodes */
         const text = graph.append("g")
