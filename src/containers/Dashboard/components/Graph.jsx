@@ -293,15 +293,15 @@ class Graph extends Component {
         /* Uncomment this snippet if you want to use link nodes.
         Also, uncomment the link node snippet on 'ticked' function */
         
-        // const linkNode = graph.append("g")
-        //     .attr("class", "link-node")
-        //     .selectAll("circle")
-        //     .data(this.linkNodes)
-        //     .enter()
-        //     .append("circle")
-        //     .attr("class", "link-node")
-        //     .attr("r", 5)
-        //     .style("fill", "#ccc")
+        const linkNode = graph.append("g")
+            .attr("class", "link-node")
+            .selectAll("circle")
+            .data(this.linkNodes)
+            .enter()
+            .append("circle")
+            .attr("class", "link-node")
+            .attr("r", 5)
+            .style("fill", "#ccc")
 
         /* SVG for the user info div */
         graph.append("g")
@@ -493,8 +493,8 @@ class Graph extends Component {
                 .attr("y", d => (d.weight ? d.y + getRadius(d.weight) / 8 : d.y));
 
             /* Uncomment this snippet if you want link nodes */
-            // linkNode.attr("cx", function (d) { return d.x = (d.source.x + d.target.x) * 0.5; })
-            //     .attr("cy", function (d) { return d.y = (d.source.y + d.target.y) * 0.5; });
+            linkNode.attr("cx", function (d) { return d.x = (d.source.x + d.target.x) * 0.5; })
+                .attr("cy", function (d) { return d.y = (d.source.y + d.target.y) * 0.5; });
         }
 
         /* Given a genre weight, returns its correspondent node size */
