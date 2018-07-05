@@ -77,10 +77,6 @@ svg {
     border-bottom: solid black 1px;
 }
 
-.spotify-iframe {
-    display: flex;
-}
-
 .DashboardOption:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -95,6 +91,36 @@ svg {
 .playlist .song-row {
     margin: 20px 10px;
     color: rgb(194, 194, 194);
+}
+
+.play {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+}
+
+.spotifyArea {
+    display: flex;
+    align-self: flex-start;
+    width: 80%;
+    height: 100%;
+}
+
+.spotify-iframe {
+    height: 100%;
+    width: 70%;
+}
+
+.exportButton {
+    height: 100%;
+    width: 30%;
+    text-align: center;
+}
+
+.exportIcon {
+    margin: 2px !important;
 }
 
 .playlist .row:hover {

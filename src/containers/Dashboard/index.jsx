@@ -31,7 +31,7 @@ class Dashboard extends Component {
         playlistReady: true,
         users: [],
         playlist: [],
-        spotifyIframe: <div style={{margin: 10}}><Icon name='spotify' size='huge'/></div>,
+        spotifyIframe: "",
         defaultLinkWeight: 8
     }
 
@@ -134,7 +134,7 @@ class Dashboard extends Component {
         if (!this.state.playlistReady) {
             playlistDiv = (
                 <div className="loadingPlaylist">
-                    <Icon name='sync' />
+                    <Icon name='notched circle loading icon' />
                     <p>loading playlist...</p>
                 </div>
             )
@@ -224,7 +224,13 @@ class Dashboard extends Component {
                 >
                     <div className='playlist'>
                         <div className='play'>
-                            {this.state.spotifyIframe}
+                            {(this.state.playlist.length > 0 && !this.state.trackSelected) ? 
+                            (   <div className="spotifyArea">
+                                    <Button className="exportButton">export playlist <Icon className="exportIcon" name="spotify" size='large'/></Button>
+                                    {this.state.spotifyIframe}
+                                </div>
+                            ) :
+                            <div style={{margin: 10}}><Icon name='spotify' size='huge'/></div> }
                         </div>
                         {playlistDiv}
                     </div>
