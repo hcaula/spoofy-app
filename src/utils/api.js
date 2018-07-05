@@ -115,6 +115,30 @@ class API {
         }
     }
 
+    async registerVote(playlist_id, track_id, vote) {
+        const options = {
+            method: 'POST',
+            headers: {
+                'access_token': this.token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                playlist_id: playlist_id,
+                track_id: track_id,
+                vote: vote
+            })
+        }
+
+        try {
+            const response = await API.request('/api/v2/playlists/vote', options);
+            if (response.status !== 200) {
+                throw new Error('Request not successfull');
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 }
 
 export default new API();

@@ -49,6 +49,15 @@ class Dashboard extends Component {
         else this.setState({ redirect: true });
     }
 
+    registerVote = async (song, vote) => {
+        try {
+            await API.registerVote(this.state.playlist_id, song, vote);
+        } catch (error) {
+            console.log(error);
+            alert("It wasn't possible to register vote for this track at this moment.");
+        }
+    }
+
     getPlaylist = async (selected) => {
         try {
             this.setState({ playlistReady: false });
@@ -67,7 +76,8 @@ class Dashboard extends Component {
             });
 
             this.setState({
-                playlist: body.playlist
+                playlist: body.playlist,
+                playlist_id: body._id
             });
 
             this.setState({ playlistReady: true });
@@ -78,7 +88,7 @@ class Dashboard extends Component {
                 this.setState({ redirect: true });
             } else {
                 console.log(err);
-                alert("Something went wrong. We've messed up. Try again in a moment.");
+                alert("It wasn't possible to generate a playlist for the selected users. Please, select others.");
             }
         }
     }
@@ -139,7 +149,7 @@ class Dashboard extends Component {
             playlistDiv = (
                 <div className='songs' style={{ height: height - 80 }}>
                     {this.state.playlist.map((s, i) =>
-                        <SongRow width={sidebar_width} key={i} song={s} onClick={this.handleSongSelect} />
+                        <SongRow registerVote={this.registerVote} width={sidebar_width} key={i} song={s} onClick={this.handleSongSelect} />
                     )}
                 </div>
             )

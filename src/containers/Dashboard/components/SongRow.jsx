@@ -12,14 +12,15 @@ export default class SongRow extends Component {
         super(props);
         this.song = this.props.song;
         this.width = this.props.width;
+        this.registerVote = this.props.registerVote;
     }
 
-    editRating = (flag, rating) => {
+    editRating = (flag, rating, cb = null) => {
         let st = {};
-        if (flag)
+        if (flag) {
             st.rating = rating;
-        else
-            st.tempRating = rating;
+            if (cb) cb(this.song.id, rating);
+        } else st.tempRating = rating;
         this.setState(st);
     }
 
@@ -31,8 +32,8 @@ export default class SongRow extends Component {
                 <Icon
                     key={i}
                     name={`star${i >= this.state.tempRating ? ' outline' : ''}`}
-                    onMouseOver={() => this.editRating(false, i + 1)}
-                    onClick={() => this.editRating(true, i + 1)}
+                    onMouseOver={() => this.editRating(false, i + 1, this.props.onClick)}
+                    onClick={() => this.editRating(true, i + 1, this.registerVote)}
                     style={{ cursor: 'pointer' }}
                 />
             );
