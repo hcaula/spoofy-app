@@ -11,9 +11,10 @@ import 'rc-slider/assets/index.css';
 const getSpotifyIframe = (uri) => {
     return (
         <iframe
+            className='spotify-iframe'
             title='spotify-iframe'
             src={`https://open.spotify.com/embed?uri=${uri}`}
-            width={80}
+            width='83%'
             height={80}
             frameBorder={0}
             allowtransparency="true"
@@ -25,7 +26,7 @@ const getSpotifyIframe = (uri) => {
 class Dashboard extends Component {
 
     state = {
-        visible: true,
+        visible: false,
         ready: false,
         playlistReady: true,
         users: [],
@@ -172,7 +173,7 @@ class Dashboard extends Component {
 
                     <div className="focus-button">
                         <Button onClick={this.focusLoggedUser} icon>
-                            User focus
+                            <Icon name="crosshairs" />
                         </Button>
                     </div>
 

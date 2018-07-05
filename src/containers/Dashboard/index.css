@@ -47,7 +47,7 @@ svg {
     top: 0;
     right: 10;
     margin: 10px;
-    z-index: 999;
+    z-index: 1;
 }
 
 #sidebar {
@@ -70,6 +70,10 @@ svg {
     top: 0;
     left: 0;
     border-bottom: solid black 1px;
+}
+
+.spotify-iframe {
+    display: flex;
 }
 
 .DashboardOption:hover {
