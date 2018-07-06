@@ -13,6 +13,7 @@ export default class SongRow extends Component {
         this.song = this.props.song;
         this.width = this.props.width;
         this.registerVote = this.props.registerVote;
+        this.index = this.props.index;
     }
 
     editRating = (flag, rating, cb = null) => {
@@ -47,7 +48,7 @@ export default class SongRow extends Component {
                 <Grid>
                     <Grid.Row>
                         <Grid.Column width={ratio * 1} onClick={() => this.props.onClick(this.props.song)} style={{ cursor: 'pointer', marginTop: 8 }}>
-                            <Icon name='sound' />
+                            <b>{this.index + 1}.</b>
                         </Grid.Column>
                         <Grid.Column width={ratio * 9} align='left' onClick={() => this.props.onClick(this.props.song)} style={{ cursor: 'pointer' }}>
                             <span className='name'>{name}</span>

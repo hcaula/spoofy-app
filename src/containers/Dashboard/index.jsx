@@ -165,7 +165,7 @@ class Dashboard extends Component {
             playlistDiv = (
                 <div className='songs' style={{ height: height - 80 }}>
                     {this.state.playlist.map((s, i) =>
-                        <SongRow registerVote={this.registerVote} width={sidebar_width} key={i} song={s} onClick={this.handleSongSelect} />
+                        <SongRow index={i} registerVote={this.registerVote} width={sidebar_width} key={i} song={s} onClick={this.handleSongSelect} />
                     )}
                 </div>
             )
