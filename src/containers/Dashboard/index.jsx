@@ -82,18 +82,11 @@ class Dashboard extends Component {
             const multipliers = selected.map(s => s.multiplier);
             const body = await API.getPlaylist(ids, multipliers);
 
-            /* Empties the playlist state so that React
-            knows that it changed and re-render component */
-            this.setState({
-                playlist: []
-            });
-
             this.setState({
                 playlist: body.playlist,
-                playlist_id: body._id
+                playlist_id: body._id,
+                playlistReady: true
             });
-
-            this.setState({ playlistReady: true });
 
         } catch (err) {
             if (err.status === 401) {
@@ -147,8 +140,8 @@ class Dashboard extends Component {
         if (!this.state.playlistReady) {
             playlistDiv = (
                 <div className="loadingPlaylist">
-                    <Icon name='notched circle loading icon' />
-                    <p>loading playlist...</p>
+                    <Icon name='notched circle loading icon' size="large"/>
+                    <h3>loading playlist...</h3>
                 </div>
             )
         } else if (this.state.playlist.length === 0) {
@@ -169,8 +162,8 @@ class Dashboard extends Component {
         }
 
         let exportButton;
-        if (this.state.exporting) exportButton = (<div><Icon name="notched spotify loading icon" /></div>);
-        else if (this.state.exported) exportButton = (<div>playlist exported! <Icon name="check" /></div>);
+        if (this.state.exporting) exportButton = (<div><Icon className="exportLoading" name="notched circle loading icon" size="large" /></div>);
+        else if (this.state.exported) exportButton = (<div>playlist exported! <Icon name="check" style="color:green"/></div>);
         else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large'/></div>);
 
         const dashboardOptions = (

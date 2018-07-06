@@ -62,7 +62,15 @@ svg {
 }
 
 .loadingPlaylist, .emptyPlaylist {
-    margin-top: 20px;
+    margin-top: 30px;
+}
+
+.loadingPlaylist > * {
+    margin: 10px !important;
+}
+
+.loadingPlaylist {
+    font-size: 20px;
 }
 
 .playlist {
@@ -93,6 +101,10 @@ svg {
     color: rgb(194, 194, 194);
 }
 
+.song-row:hover {
+    text-decoration: underline !important;
+}
+
 .play {
     display: flex;
     flex-direction: column;
@@ -120,7 +132,12 @@ svg {
 }
 
 .exportIcon {
-    margin: 2px !important;
+    margin: 4px !important;
+}
+
+.exportLoading {
+    background-color: rgba(0,0,0,0) !important;
+    color: black !important;
 }
 
 .playlist .row:hover {
