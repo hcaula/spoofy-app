@@ -124,6 +124,11 @@ class Dashboard extends Component {
         this.refs.graph.clearSelected();
     }
 
+    redrawGraph = () => {
+        this.refs.graph.clearSelected();
+        this.refs.graph.drawGraph();
+    }
+
     focusLoggedUser = () => {
         this.refs.graph.focusLoggedUser();
     }
@@ -197,12 +202,17 @@ class Dashboard extends Component {
                     </div>
 
                     <div className="focus-button">
-                        <Button className="graph-options" onClick={this.focusLoggedUser} icon>
-                            <Icon name="crosshairs" />
-                        </Button>
-                        <Button className="graph-options" onClick={this.clearSelected} icon>
-                            <Icon name="redo alternate" />
-                        </Button>
+                        <div className="ui buttons">
+                            <Button className="ui button" data-tooltip="focus on you" data-position="bottom center" onClick={this.focusLoggedUser} icon>
+                                <Icon name="crosshairs" />
+                            </Button>
+                            <Button className="ui button" data-tooltip="clear selected users" data-position="bottom center" onClick={this.clearSelected} icon>
+                                <Icon name="user times" />
+                            </Button>
+                            <Button className="ui button" data-tooltip="redraw graph" data-position="bottom center" onClick={this.redrawGraph} icon>
+                                <Icon name="redo alternate" />
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="sidebar-toggle">

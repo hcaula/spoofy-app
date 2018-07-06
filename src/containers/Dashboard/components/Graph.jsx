@@ -58,7 +58,7 @@ class Graph extends Component {
     clearSelected() {
         this.selected.forEach(s => {
             select(`#node_${s.id}`)
-                .style('border', u => console.log(u));
+                .style('border', u => (u.originalId == this.user._id ? '10px solid red' : ''));
 
             select(`#slider_${s.id}`)
                 .style('display', 'none');
@@ -255,7 +255,7 @@ class Graph extends Component {
                 const index = GraphHelper.searchByField(u.id, "id", this.selected);
                 const elem = this.selected[index];
                 if (elem) return '5px solid green';
-                else if (u.id === this.user._id) return '5px solid red';
+                else if (u.id === this.user._id) return '10px solid red';
             })
             .on("mouseover", g => {
                 select(`#fo_${g.id}`)
