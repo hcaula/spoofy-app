@@ -4,11 +4,22 @@ import './index.css';
 
 export class SpotifyButton extends Component {
 
+    scopes = [
+        'user-read-email',
+        'user-read-private',
+        'user-top-read',
+        'playlist-modify-public',
+        'playlist-modify-private',
+        'ugc-image-upload',
+        'playlist-read-collaborative',
+        'user-modify-playback-state'
+    ]
+
     render() {
         const client_id = process.env.REACT_APP_SPOTIFY_CLIENTID;
         const response_type = 'code';
         const redirect_uri = process.env.REACT_APP_SPOTIFY_REDIRECTURI;
-        const scope = 'user-read-email user-read-private user-top-read playlist-modify-public playlist-modify-private playlist-read-collaborative user-modify-playback-state';
+        const scope = this.scopes.join(' ');
 
         const host = 'accounts.spotify.com';
         let path = '/authorize/?';
