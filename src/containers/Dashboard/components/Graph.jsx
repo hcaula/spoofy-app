@@ -58,7 +58,7 @@ class Graph extends Component {
     clearSelected() {
         this.selected.forEach(s => {
             select(`#node_${s.id}`)
-                .style('border', u => (u.originalId == this.user._id ? '10px solid red' : ''));
+                .style('border', u => (u.originalId === this.user._id ? '10px solid red' : ''));
 
             select(`#slider_${s.id}`)
                 .style('display', 'none');
