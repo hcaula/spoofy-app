@@ -62,9 +62,9 @@ class Dashboard extends Component {
 
     exportPlaylist = async () => {
         try {
-            this.setState({exporting: true, exported: false});
+            this.setState({ exporting: true, exported: false });
             await API.exportPlaylist(this.state.playlist_id);
-            this.setState({exporting: false, exported: true});
+            this.setState({ exporting: false, exported: true });
         } catch (error) {
             console.log(error);
             alert("It wasn't possible to export this playlist at this moment.");
@@ -82,11 +82,17 @@ class Dashboard extends Component {
             const multipliers = selected.map(s => s.multiplier);
             const body = await API.getPlaylist(ids, multipliers);
 
+            if (this.state.playlist.length === 0) {
+                const uri = body.playlist[0].uri;
+                this.setState({ spotifyIframe: getSpotifyIframe(uri) });
+            }
+
             this.setState({
                 playlist: body.playlist,
                 playlist_id: body._id,
-                playlistReady: true
+                playlistReady: true,
             });
+
 
         } catch (err) {
             if (err.status === 401) {
@@ -122,7 +128,7 @@ class Dashboard extends Component {
     focusLoggedUser = () => {
         this.refs.graph.focusLoggedUser();
     }
-    
+
     render() {
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -140,7 +146,7 @@ class Dashboard extends Component {
         if (!this.state.playlistReady) {
             playlistDiv = (
                 <div className="loadingPlaylist">
-                    <Icon name='notched circle loading icon' size="large"/>
+                    <Icon name='circle notched loading icon' size="large" />
                     <h3>loading playlist...</h3>
                 </div>
             )
@@ -162,9 +168,9 @@ class Dashboard extends Component {
         }
 
         let exportButton;
-        if (this.state.exporting || !this.state.playlistReady) exportButton = (<div><Icon className="exportLoading" name="notched circle loading icon" size="large" /></div>);
+        if (this.state.exporting || !this.state.playlistReady) exportButton = (<div><Icon className="exportLoading" name="circle notched loading icon" size="large" /></div>);
         else if (this.state.exported) exportButton = (<div>playlist exported! <Icon className="exportCheck" name="check" /></div>);
-        else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large'/></div>);
+        else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large' /></div>);
 
         const dashboardOptions = (
             <div>
@@ -231,17 +237,17 @@ class Dashboard extends Component {
                     vertical
                     inverted
                     id="sidebar"
-                    style={{width: sidebar_width}}
+                    style={{ width: sidebar_width }}
                 >
                     <div className='playlist'>
                         <div className='play'>
-                            {(this.state.playlist.length > 0 && !this.state.trackSelected) ? 
-                            (   <div className="spotifyArea">
+                            {(this.state.playlist.length > 0 && !this.state.trackSelected) ?
+                                (<div className="spotifyArea">
                                     <Button onClick={this.exportPlaylist} className="exportButton">{exportButton}</Button>
                                     {this.state.spotifyIframe}
                                 </div>
-                            ) :
-                            <div style={{margin: 10}}><Icon name='spotify' size='huge'/></div> }
+                                ) :
+                                <div style={{ margin: 10 }}><Icon name='spotify' size='huge' /></div>}
                         </div>
                         {playlistDiv}
                     </div>
