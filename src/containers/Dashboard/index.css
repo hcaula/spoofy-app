@@ -140,6 +140,10 @@ svg {
     color: black !important;
 }
 
+.exportCheck, .exportIcon {
+    color: #1DB954 !important;
+}
+
 .playlist .row:hover {
     background-color: rgb(75, 75, 75);
     /* cursor: pointer; */

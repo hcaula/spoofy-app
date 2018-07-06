@@ -162,8 +162,8 @@ class Dashboard extends Component {
         }
 
         let exportButton;
-        if (this.state.exporting) exportButton = (<div><Icon className="exportLoading" name="notched circle loading icon" size="large" /></div>);
-        else if (this.state.exported) exportButton = (<div>playlist exported! <Icon name="check" style="color:green"/></div>);
+        if (this.state.exporting || !this.state.playlistReady) exportButton = (<div><Icon className="exportLoading" name="notched circle loading icon" size="large" /></div>);
+        else if (this.state.exported) exportButton = (<div>playlist exported! <Icon className="exportCheck" name="check" /></div>);
         else exportButton = (<div>export playlist <Icon className="exportIcon" name="spotify" size='large'/></div>);
 
         const dashboardOptions = (
