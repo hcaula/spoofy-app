@@ -120,9 +120,8 @@ class Dashboard extends Component {
         this.refs.graph.setNodesAndLinks(e);
     }
 
-    clearUsers = () => {
-        this.refs.graph.selected = [];
-        this.refs.graph.drawGraph();
+    clearSelected = () => {
+        this.refs.graph.clearSelected();
     }
 
     focusLoggedUser = () => {
@@ -201,7 +200,7 @@ class Dashboard extends Component {
                         <Button className="graph-options" onClick={this.focusLoggedUser} icon>
                             <Icon name="crosshairs" />
                         </Button>
-                        <Button className="graph-options" onClick={this.clearUsers} icon>
+                        <Button className="graph-options" onClick={this.clearSelected} icon>
                             <Icon name="redo alternate" />
                         </Button>
                     </div>

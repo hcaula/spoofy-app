@@ -55,6 +55,17 @@ class Graph extends Component {
         return index < 0;
     }
 
+    clearSelected() {
+        this.selected.forEach(s => {
+            select(`#node_${s.id}`)
+                .style('border', u => console.log(u));
+
+            select(`#slider_${s.id}`)
+                .style('display', 'none');
+        })
+
+        this.selected = [];
+    }
 
     componentDidMount() {
         this.setNodesAndLinks(this.default_weight)
@@ -292,7 +303,7 @@ class Graph extends Component {
 
         /* Uncomment this snippet if you want to use link nodes.
         Also, uncomment the link node snippet on 'ticked' function */
-        
+
         // const linkNode = graph.append("g")
         //     .attr("class", "link-node")
         //     .selectAll("circle")
