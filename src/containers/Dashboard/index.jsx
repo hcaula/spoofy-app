@@ -90,7 +90,8 @@ class Dashboard extends Component {
             this.setState({
                 playlist: body.playlist,
                 playlist_id: body._id,
-                playlistReady: true,
+                seeds: body.seeds,
+                playlistReady: true
             });
 
 
@@ -258,11 +259,14 @@ class Dashboard extends Component {
                                 ) :
                                 <div style={{ margin: 10 }}><Icon name='spotify' size='huge' /></div>}
                         </div>
-                        {playlistDiv}
+                        <div style={{height: "30px"}}>
+                            {(this.state.seeds ? this.state.seeds.join(', ') : "")}
+                        </div>
+                    {playlistDiv}
                     </div>
                 </Sidebar>
 
-            </Sidebar.Pushable>
+            </Sidebar.Pushable >
         );
     }
 }
